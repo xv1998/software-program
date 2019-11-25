@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>zepto.js粒子网页动画</title>
+    <style>
+        /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+        body {
+            overflow: hidden;
+            background: #111;
+            color:white;
+        }
+       
+        #login-area ,#register-area
+        {
+            position:absolute;
+            top:30%;
+            left:30%;
+            width:40%;
+            height:30%;
+            display:grid;
+            grid-template-rows:repeat(3,33.33%);
+            grid-template-columns:repeat(4,1fr);
+            background:white;
+            opacity: 0.8;  
+            color:black;
+            border-radius: 20px;
+        }
+        #login-area
+        {
+            display:none;
+        }
+        a
+        {
+            width:90%;
+            height:100%;
+            display:flex;
+            justify-content:center;
+            align-items:end;
+            margin:auto;
+            text-decoration: none;
+        }
+        span 
+        {
+            font-size:1.1em;
+            margin:auto;
+            text-align:center;
+            height:50%;
+            display:flex;
+        }
+        .username
+        {
+            grid-area:1/2/2/5;
+        }
+        .password
+        {
+            grid-area:2/2/3/5;
+        }
+        .username,.password
+        {
+            height:50%;
+            width:90%;
+            font-size:1.1em;
+            display:flex;
+            margin:auto;
+        }
+        .tip 
+        {
+            grid-area:3/4/4/5;
+            width:100%;
+        }
+        .tips 
+        {
+            grid-area:3/2/4/3;
+        }
+        .register
+        {
+            grid-area:3/3/4/4;
+        }
+        .register,.tips
+        {
+            /* grid-area:3/4/4/5; */
+            display:flex;
+            width:auto;
+            height:50%;
+            width:50%;
+            margin:auto;
+            margin-top:10%;
+            line-height:50%;
+            padding:0;
+            text-align: center;
+            font-size:1.1em;
+            background:rgb(89,89,89);
+            padding-left:10%;
+            box-shadow:3px 3px 2px gray;
+            border-radius:10px;
+            border:none;
+            outline:none;
+            transition:all 120ms;
+        }
+        input[type = "button"]
+        {
+            color:white;
+        }
+        .tips:active 
+        {
+            margin-top:16.656px;
+            box-shadow:0px 0px 0px;
+        }
+        .register:active 
+        {
+            margin-top:16.656px;
+            box-shadow:0px 0px 0px;
+        }
+        #register-area .password 
+        {
+            width:85%;
+            grid-area:2/2/3/4;
+        }
+        #register-area .verification-code
+        {
+            width:90%;
+            height:60%;
+            display:flex;
+            margin:auto;
+            color:black;
+        }
+        #register-area .register
+        {
+            grid-area:3/2/4/4;
+            width:70%;
+            height:50%;
+            margin:auto;
+            padding-left:27%;
+            letter-spacing:.3em;
+        }
+        #register-area .register:active 
+        {
+            margin-top:18.656px;
+        }
+       
+    </style>
+    <script src="js/prefixfree.min.js"></script>
+</head>
+<body>
+
+    <canvas></canvas>
+    <div id = "login-area">
+        <span>手机号</span>
+        <input type = "text" class = "username">
+        <span>密码</span>
+        <input type = "password" class = "password">
+        <span class = "tip"><a href = "#">忘记密码？</a></span>
+        <input type = "button" value = "登录" class = "tips">
+        <input type = "button" value = "注册" class = "register">
+    </div>
+    <div id = "register-area">
+            <span>手机号</span>
+            <input type = "text" class = "username">
+            <span>密码</span>
+            <input type = "password" class = "password">
+            <input type = "button" value = "点击获取验证码" class = "verification-code">
+            <span class = "tip"><a href = "#">已有密码？</a></span>
+            <!-- <input type = "button" value = "登录" class = "tips"> -->
+            <input type = "button" value = "注册" class = "register">
+    </div>
+    <script>
+        var tip = document.getElementsByClassName("tip");
+        var registerArea = document.getElementById("register-area");
+        var loginArea  = document.getElementById("login-area");
+        var register = document.getElementsByClassName("register")[0];
+        register.onclick = function()
+        {
+            registerArea.style.display  = "grid";
+            loginArea.style.display = "none";
+        }
+        tip[1].onclick = function()
+        {
+            registerArea.style.display  = "none";
+            loginArea.style.display = "grid";
+        }
+    </script>
+    <script src='js/zepto.min.js'></script>
+    <script src='js/Stats.js'></script>
+    <script src="js/index.js"></script>
+</body>
+</html>
