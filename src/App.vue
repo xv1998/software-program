@@ -1,19 +1,33 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <button @click="showDetail">show</button>
+    <bookDetailPage class="book" :bookId=1  :showDialog="showDialog" v-on:close="closeDialog"></bookDetailPage>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import bookDetailPage from './components/common/book-detail-page.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    bookDetailPage
+  },
+  data(){
+    return {
+      showDialog: false
+    }
+  },
+  methods: {
+    showDetail:function() {
+      this.showDialog = true
+    },
+    closeDialog:function (show) {
+      this.showDialog = show
+    }
   }
 }
+
 </script>
 
 <style>
@@ -24,5 +38,26 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.book{
+  -webkit-transform: translateY(0);
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -o-transform: translateY(0);
+  transform: translateY(0);
+}
+.book{
+  animation:mymove 5s infinite;
+}
+@keyframes mymove {
+  0% {
+    transform: translateY(5px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(5px);
+  }
 }
 </style>
