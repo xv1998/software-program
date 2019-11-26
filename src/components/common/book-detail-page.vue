@@ -75,12 +75,34 @@ export default {
     z-index: 1;
     filter: alpha(opacity=50);
 }
-
+.cards{
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+}
+.cards{
+    animation:mymove 5s infinite;
+}
+@keyframes mymove {
+    0% {
+        transform: translateY(5px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(5px);
+    }
+}
 .cards {
     width: 650px;
     height: 450px;
     position: absolute;
-    margin: 0 auto;
+    left: 0;
+    right: 0;
+    margin: auto;
     z-index: 2;
 }
 
