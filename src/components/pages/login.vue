@@ -40,6 +40,7 @@
                             </div>
                             <div class="forms_field">
                                 <input type="tel"  v-model="signMess.phone" placeholder="Phone" class="forms_field-input" required/>
+                                <v-button class="code-button">发送验证码</v-button>
                             </div>
                             <div class="forms_field">
                                 <input type="password"  v-model="signMess.password" placeholder="Password" class="forms_field-input" required/>
@@ -75,7 +76,6 @@ export default {
                 "account":"",
                 "password":""
             }
-
         };
     },
     methods: {
@@ -88,6 +88,8 @@ export default {
             for(let key in this.signMess){
                 formData.append(key,this.signMess[key]);
             }
+            this.$http.post('/',)
+                .then()
             window.console.log(this.signMess);
         },
         login:function () {
@@ -106,7 +108,6 @@ export default {
 button{
     background-color: transparent;
     padding: 0;
-    border: 0;
     outline: 0;
     cursor: pointer;
 }
@@ -130,7 +131,11 @@ input::placeholder {
     width: 100%;
     height: 100vh;
 }
-
+.code-button{
+    position: absolute;
+    right: 30px;
+    background: #fff;
+}
 .user_options-container {
     position: relative;
     width: 80%;
@@ -214,12 +219,13 @@ input::placeholder {
 /*.forms_fieldset{*/
 /*    border: none;*/
 /*}*/
-.forms_field:not(:last-of-type) {
+.forms_field{
+    padding: 0 20px;
     margin-bottom: 20px;
 }
 
 .forms_field-input {
-    width: 80%;
+    width: 100%;
     border-bottom: 1px solid #ccc;
     padding: 6px 20px 6px 6px;
     font-family: 'Montserrat', sans-serif;
@@ -238,10 +244,11 @@ input::placeholder {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 35px;
+    margin-top: 25px;
 }
 
 .forms_buttons-forgot {
+    border: none;
     font-family: 'Montserrat', sans-serif;
     letter-spacing: .1rem;
     color: #ccc;
