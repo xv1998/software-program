@@ -8,6 +8,10 @@
             </div>
             <div class="lower">
                 <div class="nav">
+                    <div class="collect-icon"  @click="collect()">
+                        <v-icon v-if="isCollect" type="heart"></v-icon>
+                        <v-icon v-else type="heart-o"></v-icon>
+                    </div>
                     <img class="cancel" @click="close()" src="../../assets/cancel.png"/>
                 </div>
                 <div class="description">
@@ -45,6 +49,7 @@ export default {
     },
     data() {
         return {
+            isCollect: false,
             show: this.showDialog
         }
     },
@@ -57,6 +62,9 @@ export default {
         close() {
             this.show = false
             this.$emit('close', this.show)
+        },
+        collect(){
+            this.isCollect = true
         }
     }
 }
@@ -199,7 +207,9 @@ export default {
     border-bottom: 1px solid rgba(255, 255, 255, 0.72);
     font-size: 12px;
 }
-
+.nav .collect-icon{
+    float: left;
+}
 .nav .cancel {
     z-index: 10;
     height: 20px;
