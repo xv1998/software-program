@@ -3,7 +3,7 @@
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
 <!--        <button @click="showDetail">show</button>-->
-        <bookDetailPage :bookId=1 :showDialog="showDialog" v-on:close="closeDialog"></bookDetailPage>
+        <bookDetailPage :bookId=1 :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" v-on:close="closeDialog"></bookDetailPage>
     </div>
 </template>
 
@@ -22,10 +22,34 @@ export default {
     data() {
         return {
             showDialog: false,
+            bookDetail:{
+                bookname: "hahaha",
+                writer: "hahaha",
+                press: "hahaha",
+                description: "hahahahahhahahahahhahaha",
+                photourls: "http://172.16.164.90:8000/static/img/a.png;http://172.16.164.90:8000/static/img/b.png",
+                ispicked: false,
+                isdonated: false,
+                donateTo: 1,
+                uploaddatetime: "2019-12-02 04:16:29",
+            }
         }
+    },
+    created:function() {
+        this.Global.bottleNum = parseInt(localStorage.getItem('bottleNum'))
     },
     methods: {
         showDetail: function () {
+            const that = this
+            let id = (Math.ceil(Math.random()*that.Global.bottleNum))
+            this.$http.post('http://172.16.164.90:8000/getBottle/',{ 'botid': id}).then(res=>{
+                if (res.data.msg === 'success') {
+                    that.bookDetail = res.data
+                    window.console.log(that.bookDetail)
+                }else{
+                    that.$message.error(res.data.msg)
+                }
+            })
             this.showDialog = true
         },
         closeDialog: function (show) {

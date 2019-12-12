@@ -12,7 +12,7 @@
         <router-link to="" class="menu-item red"> </router-link>
         <router-link to="/" class="menu-item purple"> 退出</router-link>
         <router-link to="" class="menu-item orange"> 历史</router-link>
-        <router-link to="" class="menu-item lightblue"> 发布</router-link>
+        <router-link to="/publish" class="menu-item lightblue"> 发布</router-link>
     </nav>
 </template>
 
@@ -23,17 +23,20 @@ export default {
 </script>
 
 <style scoped>
+.menu{
+    z-index: 100;
+}
 .menu-item,
 .menu-open-button {
     background: #EEEEEE;
     border-radius: 100%;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     margin-left: -40px;
     position: absolute;
     color: #FFFFFF;
     text-align: center;
-    line-height: 80px;
+    line-height: 60px;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     -webkit-transition: -webkit-transform ease-out 200ms;
@@ -93,8 +96,8 @@ export default {
 }
 
 .menu {
-    width: 300px;
-    height: 200px;
+    width: 280px;
+    height: 160px;
     position: fixed;
     right: 0;
     bottom: 0;
@@ -102,7 +105,7 @@ export default {
     /*height: 80px;*/
     text-align: center;
     box-sizing: border-box;
-    font-size: 26px;
+    font-size: 20px;
 }
 
 
@@ -185,50 +188,50 @@ export default {
 .menu-open:checked ~ .menu-item:nth-child(3) {
     transition-duration: 180ms;
     -webkit-transition-duration: 180ms;
-    -webkit-transform: translate3d(0.08361px, -104.99997px, 0);
-    transform: translate3d(0.08361px, -104.99997px, 0);
+    -webkit-transform: translate3d(0.0px, -90.0px, 0);
+    transform: translate3d(0.0px, -90.0px, 0);
 }
 
 .menu-open:checked ~ .menu-item:nth-child(4) {
     transition-duration: 280ms;
     -webkit-transition-duration: 280ms;
-    -webkit-transform: translate3d(90.9466px, -52.47586px, 0);
-    transform: translate3d(90.9466px, -52.47586px, 0);
+    -webkit-transform: translate3d(90.9466px, -45.47586px, 0);
+    transform: translate3d(90.9466px, -45.47586px, 0);
 }
 
 .menu-open:checked ~ .menu-item:nth-child(5) {
     transition-duration: 380ms;
     -webkit-transition-duration: 380ms;
-    -webkit-transform: translate3d(90.9466px, 52.47586px, 0);
-    transform: translate3d(90.9466px, 52.47586px, 0);
+    -webkit-transform: translate3d(90.9466px, 45.47586px, 0);
+    transform: translate3d(90.9466px, 45.47586px, 0);
 }
 
 .menu-open:checked ~ .menu-item:nth-child(6) {
     transition-duration: 480ms;
     -webkit-transition-duration: 480ms;
-    -webkit-transform: translate3d(0.08361px, 104.99997px, 0);
-    transform: translate3d(0.08361px, 104.99997px, 0);
+    -webkit-transform: translate3d(0.08361px, 90.99997px, 0);
+    transform: translate3d(0.08361px, 90.99997px, 0);
 }
 
 .menu-open:checked ~ .menu-item:nth-child(7) {
     transition-duration: 580ms;
     -webkit-transition-duration: 580ms;
-    -webkit-transform: translate3d(-90.86291px, 52.62064px, 0);
-    transform: translate3d(-90.86291px, 52.62064px, 0);
+    -webkit-transform: translate3d(-90.86291px, 45.62064px, 0);
+    transform: translate3d(-90.86291px, 45.62064px, 0);
 }
 
 .menu-open:checked ~ .menu-item:nth-child(8) {
     transition-duration: 680ms;
     -webkit-transition-duration: 680ms;
-    -webkit-transform: translate3d(-91.03006px, -52.33095px, 0);
-    transform: translate3d(-91.03006px, -52.33095px, 0);
+    -webkit-transform: translate3d(-90.03006px, -45.33095px, 0);
+    transform: translate3d(-90.03006px, -45.33095px, 0);
 }
 
 .menu-open:checked ~ .menu-item:nth-child(9) {
     transition-duration: 780ms;
     -webkit-transition-duration: 780ms;
-    -webkit-transform: translate3d(-0.25084px, -104.9997px, 0);
-    transform: translate3d(-0.25084px, -104.9997px, 0);
+    -webkit-transform: translate3d(-0.0px, -90.9997px, 0);
+    transform: translate3d(-0.0px, -90.9997px, 0);
 }
 
 .blue {
@@ -292,14 +295,14 @@ export default {
 }
 
 .lightblue {
-    background-color: #62C2E4;
+    background-color: rgb(64, 125, 164);
     box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .lightblue:hover {
     border-radius: 100%;
-    color: #62C2E4;
+    color: rgb(64, 125, 164);
     text-shadow: none;
 }
 

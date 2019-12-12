@@ -13,16 +13,19 @@
                 </div>
             </div>
 
-            <div class="user_options-forms" id="user_options-forms"  :class="{ 'bounceLeft': isSign, 'bounceRight' :isLogin}">
+            <div class="user_options-forms" id="user_options-forms"
+                 :class="{ 'bounceLeft': isSign, 'bounceRight' :isLogin}">
                 <div class="user_forms-login">
                     <h2 class="forms_title">Login</h2>
                     <form class="forms_form">
                         <fieldset class="forms_fieldset">
                             <div class="forms_field">
-                                <input type="text"  v-model="loginMess.account" placeholder="account" class="forms_field-input" required autofocus/>
+                                <input type="text" v-model="loginMess.account" placeholder="account"
+                                       class="forms_field-input" required autofocus/>
                             </div>
                             <div class="forms_field">
-                                <input type="password"  v-model="loginMess.password" placeholder="Password" class="forms_field-input" required/>
+                                <input type="password" v-model="loginMess.password" placeholder="Password"
+                                       class="forms_field-input" required/>
                             </div>
                         </fieldset>
                         <div class="forms_buttons">
@@ -36,17 +39,22 @@
                     <form class="forms_form">
                         <fieldset class="forms_fieldset">
                             <div class="forms_field">
-                                <input type="text" v-model="signMess.account" placeholder="Full Name" class="forms_field-input" required/>
+                                <input type="text" v-model="signMess.account" placeholder="Full Name"
+                                       class="forms_field-input" required/>
                             </div>
                             <div class="forms_field">
-                                <input type="tel"  v-model="signMess.phone" placeholder="Phone" class="forms_field-input" required/>
-                                <v-button class="code-button">发送验证码</v-button>
+                                <input type="tel" v-model="signMess.phone" placeholder="Phone" class="forms_field-input"
+                                       required/>
+                                <el-button size="small" round v-on:click="getCode()" class="code-button">发送验证码
+                                </el-button>
                             </div>
                             <div class="forms_field">
-                                <input type="password"  v-model="signMess.password" placeholder="Password" class="forms_field-input" required/>
+                                <input type="password" v-model="signMess.password" placeholder="Password"
+                                       class="forms_field-input" required/>
                             </div>
                             <div class="forms_field">
-                                <input type="text"  v-model="signMess.code" placeholder="Verification code" class="forms_field-input" required/>
+                                <input type="text" v-model="signMess.code" placeholder="Verification code"
+                                       class="forms_field-input" required/>
                             </div>
                         </fieldset>
                         <div class="forms_buttons">
@@ -60,63 +68,125 @@
 </template>
 
 <script>
+// import $ from 'jquery'
+
 export default {
     name: "login",
     data() {
         return {
-            isSign:true,
-            isLogin:false,
-            signMess:{
-                "account":"",
-                "password":"",
-                "phone":"",
-                "code":""
+            isSign: true,
+            isLogin: false,
+            signMess: {
+                "account": "",
+                "password": "",
+                "phone": "",
+                "code": ""
             },
-            loginMess:{
-                "account":"",
-                "password":""
+            loginMess: {
+                "account": "",
+                "password": ""
             }
-        };
+        }
     },
     methods: {
         change: function () {
-            this.isSign = !this.isSign;
-            this.isLogin = !this.isLogin;
+            this.isSign = !this.isSign
+            this.isLogin = !this.isLogin
+        },
+        getCode: function () {
+            const that = this
+            this.$http.get('http://172.16.164.90:8000/get_sms/', {
+                params: {
+                    'telephone': that.signMess.phone
+                }
+            }).then(res => {
+                if (res.data.code !== 1) {
+                    that.$message.error(res.data.message)
+                } else {
+                    that.$message.success(res.data.message)
+                }
+            }).catch(e => {
+                window.console.log(e)
+            })
         },
         signUp: function () {
-            let formData = new FormData();
-            for(let key in this.signMess){
-                formData.append(key,this.signMess[key]);
-            }
-            this.$http.post('/',)
-                .then()
-            window.console.log(this.signMess);
+            const that = this
+            this.$http.post('http://172.16.164.90:8000/register/', {
+                'username': that.signMess.account,
+                'password': that.signMess.password,
+                'phonenumber': that.signMess.phone,
+                'code': that.signMess.code
+            }).then(res => {
+                if (res.data.code === 1) {
+                    that.$message.success("注册成功")
+                    that.signMess = {
+                        "account": "",
+                        "password": "",
+                        "phone": "",
+                        "code": ""
+                    }
+                    that.change()
+                } else {
+                    that.$message.error(res.data.message)
+                }
+            }).catch(e => {
+                window.console.log(e)
+            })
         },
-        login:function () {
-            let formData = new FormData();
-            for(let key in this.loginMess){
-                formData.append(key,this.loginMess[key]);
-            }
-            this.$router.push({name:'mainPage'})
-            window.console.log(this.loginMess);
+        login: function () {
+            const that = this
+            // const loginMess = this.loginMess
+            // that.$router.push({ name: 'mainPage' })
+            this.$http.post("/login/", {
+                    "username": "xv",//`${loginMess.account}`,
+                    "password": "123"//`${loginMess.password}`
+                }).then(res => {
+                switch (res.data.msg) {
+                    case 'success': {
+                        that.$message.success("登录成功")
+                        that.$cookies.set('sessionid', `sessionid=${res.data.sessionid}`)
+                        that.$http.post('/getUserInfos/').then(res1 => {
+                            if (res.data.msg === 'success') {
+                                window.console.log(res1.data)
+                            }
+                        })
+                        that.Global.bottleNum = res.data.bottlenum
+                        localStorage.setItem('bottleNum', res.data.bottlenum)
+                        that.$router.push({ name: 'mainPage' })
+                        break
+                    }
+                    case 'wrong password': {
+                        that.$message.error("密码错误")
+                        break
+                    }
+                    case 'no such user': {
+                        that.$message.error("账号错误")
+                        break
+                    }
+                }
+            }).catch(e => {
+                window.console.log(e)
+            })
         }
     }
 }
 </script>
 
 <style scoped>
-button{
+button {
     background-color: transparent;
     padding: 0;
     outline: 0;
     cursor: pointer;
 }
-input{
+
+input {
     background-color: transparent;
     padding: 0;
     border: 0;
     outline: 0;
 }
+
 input::placeholder {
     font-size: .85rem;
     font-family: 'Montserrat', sans-serif;
@@ -124,6 +194,7 @@ input::placeholder {
     letter-spacing: .1rem;
     color: #ccc;
 }
+
 .user {
     display: flex;
     justify-content: center;
@@ -131,11 +202,14 @@ input::placeholder {
     width: 100%;
     height: 100vh;
 }
-.code-button{
+
+.code-button {
+    top: 140px;
     position: absolute;
     right: 30px;
     background: #fff;
 }
+
 .user_options-container {
     position: relative;
     width: 80%;
@@ -208,7 +282,7 @@ input::placeholder {
 }
 
 .user_options-forms .forms_title {
-    margin-bottom: 45px;
+    margin-bottom: 35px;
     font-size: 1.5rem;
     font-weight: 500;
     line-height: 1em;
@@ -216,10 +290,11 @@ input::placeholder {
     color: #e8716d;
     letter-spacing: .1rem;
 }
+
 /*.forms_fieldset{*/
 /*    border: none;*/
 /*}*/
-.forms_field{
+.forms_field {
     padding: 0 20px;
     margin-bottom: 20px;
 }
@@ -323,6 +398,7 @@ input::placeholder {
         transform: translate3d(0, 0, 0);
     }
 }
+
 @keyframes bounceLeft {
     0% {
         transform: translate3d(100%, -50%, 0);
@@ -334,6 +410,7 @@ input::placeholder {
         transform: translate3d(0, -50%, 0);
     }
 }
+
 @keyframes bounceRight {
     0% {
         transform: translate3d(0, -50%, 0);

@@ -1,16 +1,16 @@
 <template>
-    <div v-if="show">
+    <div class="container" v-if="show">
         <div class="fullbg"></div>
         <div class="cards">
             <div class="upper">
-                <img src="../../assets/bookCover.jpg"/>
+                <img src="bookImg"/>
                 <h2>{{bookName}}</h2>
             </div>
             <div class="lower">
                 <div class="nav">
                     <div class="collect-icon"  @click="collect()">
-                        <v-icon v-if="isCollect" type="heart"></v-icon>
-                        <v-icon v-else type="heart-o"></v-icon>
+                        <img src="../../assets/heartFill.png" v-if="isCollect">
+                        <img v-else src="../../assets/heart.png">
                     </div>
                     <img class="cancel" @click="close()" src="../../assets/cancel.png"/>
                 </div>
@@ -18,7 +18,8 @@
                     <div class="info">
                         <section>{{ bookIntro }}</section>
                     </div>
-                    <button>buy</button>
+                    <el-button class="button" type="info" plain disabled v-if="isDonated">{{ ispicked ? 'DONATED':'GET'}}</el-button>
+                    <el-button class="button" type="info" plain v-else>{{ ispicked ? 'DONATED':'GET'}}</el-button>
                 </div>
 
             </div>
@@ -30,6 +31,18 @@
 export default {
     name: "bookDetailPage",
     props: {
+        ispicked:{
+            type: Boolean,
+            default: false
+        },
+        isDonated:{
+            type: Boolean,
+            default: false
+        },
+        bookImg:{
+            type: String,
+            default: '../../assets/bookCover.jpg'
+        },
         showDialog: {
             type: Boolean,
             default: false
@@ -64,7 +77,16 @@ export default {
             this.$emit('close', this.show)
         },
         collect(){
-            this.isCollect = true
+            const that = this
+            this.$http.post('http://172.16.164.90:8000/addStar/',{
+                'bid':that.bookId
+            }).then(res =>{
+                if (res.data.msg === 'success') {
+                    that.isCollect = true
+                }else{
+                    that.$message.error(res.data.msg)
+                }
+            })
         }
     }
 }
@@ -72,6 +94,11 @@ export default {
 
 
 <style scoped>
+.container{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
 .fullbg {
     background-color: #6d6d66;
     left: 0;
@@ -105,18 +132,18 @@ export default {
     }
 }
 .cards {
+    position: fixed;
     width: 650px;
     height: 450px;
-    position: absolute;
     left: 0;
     right: 0;
+    top: 0;
+    bottom: 0;
     margin: auto;
     z-index: 2;
 }
 
 .upper {
-    width: 650px;
-    height: 450px;
     background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     -moz-transform-style: preserve-3d;
     -moz-backface-visibility: hidden;
@@ -133,7 +160,7 @@ export default {
     left: 0;
     top: 0;
     color: #515151;
-    margin: 0;
+    text-align: center;
     text-transform: uppercase;
     font-weight: 500;
 }
@@ -149,6 +176,8 @@ export default {
 }
 
 .lower, .upper {
+    width: 650px;
+    height: 450px;
     position: absolute;
     transition: 1.5s ease-in-out;
     opacity: 0.9;
@@ -161,8 +190,6 @@ export default {
 .lower {
     background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     padding: 10px;
-    width: 650px;
-    height: 450px;
     -moz-transform-style: preserve-3d;
     -moz-backface-visibility: hidden;
     -webkit-transform-style: preserve-3d;
@@ -200,7 +227,7 @@ export default {
 }
 
 .nav {
-    margin: 20px 20px 0 20px;
+    margin: 10px 20px 0 20px;
     color: #727272;
     text-transform: uppercase;
     padding: 20px;
@@ -208,7 +235,12 @@ export default {
     font-size: 12px;
 }
 .nav .collect-icon{
+    position: absolute;
     float: left;
+}
+.collect-icon img{
+    width: 20px;
+    height: 20px;
 }
 .nav .cancel {
     z-index: 10;
@@ -232,7 +264,7 @@ export default {
     margin-top: 10px;
     overflow-y: auto;
     overflow-x: hidden;
-    height: 300px;
+    height: 280px;
     text-shadow:none;
     font-family: cursive;
     font-size: 14px;
@@ -250,26 +282,17 @@ export default {
     border-radius: 10px;
     background-color: black;
 }
-.description button {
+.description .button {
     outline: 0;
     text-align: center;
-    background: none;
     border: 1px solid #d9d9d9;
     padding: 8px 0px;
-    color: #515151;
     text-transform: uppercase;
     width: 125px;
     font-family: inherit;
     margin: 15px auto 0 auto;
     transition: all 0.3s ease;
     font-weight: 500;
-}
-
-.description button:hover {
-    background: darken(white, 2%);
-    border: 1px solid #aedaa6;
-    color: #aedaa6;
-    cursor: pointer;
 }
 
 </style>

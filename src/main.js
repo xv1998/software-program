@@ -1,16 +1,36 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router/router'
-import vueBeauty from 'vue-beauty'
-import 'vue-beauty/package/style/vue-beauty.min.css'
-import VueResource from 'vue-resource'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+// import VueResource from 'vue-resource'
+import globalData from './libs/globalData.js'
+import VueCookies from 'vue-cookies'    //引入VueCookies
+import axios from  'axios'
+import qs from 'qs'
 
-Vue.use(VueResource)
-Vue.use(vueBeauty)
+Vue.use(VueCookies)    // 声明使用
+// Vue.use(VueResource)
+Vue.use(ElementUI)
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+axios.defaults.baseURL = 'http://172.16.164.90:8000'
+axios.interceptors.request.use((config) => {
+    let token = VueCookies.get("sessionid")
+    if(config.method  === 'post' && token){
+        config.data = qs.stringify(config.data);
+    }
+    if (token) config.headers.Authorization = token;
+    return config;
+},(error) =>{
+    return Promise.reject(error);
+});
+axios.defaults.withCredentials = true
 Vue.config.productionTip = false
+Vue.prototype.Global = globalData
+Vue.prototype.$http = axios
 
 new Vue({
-  el: '#app',
-  render: h => h(App),
-  router
+    el: '#app',
+    render: h => h(App),
+    router,
 }).$mount('#app')
