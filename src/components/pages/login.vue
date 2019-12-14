@@ -95,7 +95,7 @@ export default {
         },
         getCode: function () {
             const that = this
-            this.$http.get('http://172.16.164.90:8000/get_sms/', {
+            this.$http.get('/get_sms/', {
                 params: {
                     'telephone': that.signMess.phone
                 }
@@ -111,7 +111,7 @@ export default {
         },
         signUp: function () {
             const that = this
-            this.$http.post('http://172.16.164.90:8000/register/', {
+            this.$http.post('/register/', {
                 'username': that.signMess.account,
                 'password': that.signMess.password,
                 'phonenumber': that.signMess.phone,
@@ -135,21 +135,16 @@ export default {
         },
         login: function () {
             const that = this
-            // const loginMess = this.loginMess
+            const loginMess = this.loginMess
             // that.$router.push({ name: 'mainPage' })
-            this.$http.post("/login/", {
-                    "username": "xv",//`${loginMess.account}`,
-                    "password": "123"//`${loginMess.password}`
-                }).then(res => {
+            this.$http.post("/login/", that.$qs.stringify({
+                    "username": `${loginMess.account}`,
+                    "password": `${loginMess.password}`
+                })).then(res => {
                 switch (res.data.msg) {
                     case 'success': {
                         that.$message.success("登录成功")
-                        that.$cookies.set('sessionid', `sessionid=${res.data.sessionid}`)
-                        that.$http.post('/getUserInfos/').then(res1 => {
-                            if (res.data.msg === 'success') {
-                                window.console.log(res1.data)
-                            }
-                        })
+                        that.$cookies.set('sessionid', `${res.data.sessionid}`)
                         that.Global.bottleNum = res.data.bottlenum
                         localStorage.setItem('bottleNum', res.data.bottlenum)
                         that.$router.push({ name: 'mainPage' })
@@ -164,6 +159,15 @@ export default {
                         break
                     }
                 }
+            }).catch(e => {
+                window.console.log(e)
+            }).then(()=>{
+                that.$http.post('/getUserInfos/').then(res1 => {
+                    if (res1.data.msg === 'success') {
+                        window.console.log(res1.data)
+                        localStorage.setItem('user_info',res1.data)
+                    }
+                })
             }).catch(e => {
                 window.console.log(e)
             })

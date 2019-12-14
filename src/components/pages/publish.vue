@@ -149,22 +149,27 @@ export default {
                 let re = /^[0-9]+.?[0-9]*/
                 return re.test(number)
             }
-            if (formName.donateTo.length !== 1){
-                formName.donateTo.forEach(item =>{
-                    if (_isNumber(item))
-                        formName.donateTo = parseInt(item)
+            if (formName){
+                if (formName.donateTo.length !== 1){
+                    window.console.log(formName.donateTo)
+                    formName.donateTo.forEach(item =>{
+                        if (_isNumber(item))
+                            formName.donateTo = parseInt(item)
+                    })
+                }
+                this.param = new FormData();
+                this.param.append('bookname', formName.name)
+                this.param.append('writer', formName.author)
+                this.param.append('press', formName.publisher)
+                this.param.append('timeouthandle', 'true')
+                this.param.append('sendto', formName.donateTo)
+                window.console.log(this.param)
+                this.$http.post('/addBottle/',that.param).then(res =>{
+                    window.console.log(res)
                 })
+            }else {
+                that.$message.error('请填写资料完整')
             }
-            this.param = new FormData();
-            this.param.append('bookname', formName.name)
-            this.param.append('writer', formName.author)
-            this.param.append('press', formName.publisher)
-            this.param.append('timeouthandle', 'true')
-            this.param.append('sendto', formName.donateTo)
-            window.console.log(this.param)
-            this.$http.post('http://172.16.164.90:8000/addBottle/',that.param).then(res =>{
-                window.console.log(res)
-            })
             // this.$refs[formName].validate((valid) => {
             //     if (valid) {
             //         alert('submit!')

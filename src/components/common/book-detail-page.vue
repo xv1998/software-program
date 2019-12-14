@@ -3,12 +3,12 @@
         <div class="fullbg"></div>
         <div class="cards">
             <div class="upper">
-                <img src="bookImg"/>
+                <img v-bind:src="bookImg"/>
                 <h2>{{bookName}}</h2>
             </div>
             <div class="lower">
                 <div class="nav">
-                    <div class="collect-icon"  @click="collect()">
+                    <div class="collect-icon"  @click="collected()">
                         <img src="../../assets/heartFill.png" v-if="isCollect">
                         <img v-else src="../../assets/heart.png">
                     </div>
@@ -18,8 +18,8 @@
                     <div class="info">
                         <section>{{ bookIntro }}</section>
                     </div>
-                    <el-button class="button" type="info" plain disabled v-if="isDonated">{{ ispicked ? 'DONATED':'GET'}}</el-button>
-                    <el-button class="button" type="info" plain v-else>{{ ispicked ? 'DONATED':'GET'}}</el-button>
+                    <el-button class="button" type="info" plain disabled v-if="isDonated && ispicked">HAD BEEN PICKED</el-button>
+                    <el-button class="button" type="info" plain v-else-if="isDonated&& !ispicked">GET</el-button>
                 </div>
 
             </div>
@@ -31,6 +31,10 @@
 export default {
     name: "bookDetailPage",
     props: {
+        collect:{
+            type: Boolean,
+            default: false
+        },
         ispicked:{
             type: Boolean,
             default: false
@@ -67,6 +71,9 @@ export default {
         }
     },
     watch: {
+        'collect'(collect){
+            this.isCollect = collect
+        },
         'showDialog'(showDialog) {
             this.show = showDialog
         }
@@ -76,13 +83,32 @@ export default {
             this.show = false
             this.$emit('close', this.show)
         },
-        collect(){
+        collected(){
             const that = this
-            this.$http.post('http://172.16.164.90:8000/addStar/',{
-                'bid':that.bookId
-            }).then(res =>{
+            if (this.isCollect){
+                this.$message.error('您已收藏')
+            }else{
+                this.$http.post('/addStar/',{
+                    'bid':that.bookId
+                }).then(res =>{
+                    if (res.data.msg === 'success') {
+                        that.isCollect = true
+                        that.getCollected().catch(e =>{
+                            that.$message.error(e)
+                        })
+                    }else{
+                        that.$message.error(res.data.msg)
+                    }
+                })
+            }
+        },
+        // 获取用户收藏记录
+        getCollected: function () {
+            const that = this
+            this.$http.post('/getStarInfos/').then(res=>{
                 if (res.data.msg === 'success') {
-                    that.isCollect = true
+                    window.console.log(res.data)
+                    localStorage.setItem('user_bottle', JSON.stringify(res.data.bottles))
                 }else{
                     that.$message.error(res.data.msg)
                 }
@@ -159,6 +185,7 @@ export default {
 .upper h2 {
     left: 0;
     top: 0;
+    margin: auto;
     color: #515151;
     text-align: center;
     text-transform: uppercase;
@@ -286,9 +313,9 @@ export default {
     outline: 0;
     text-align: center;
     border: 1px solid #d9d9d9;
-    padding: 8px 0px;
+    padding: 8px 0;
     text-transform: uppercase;
-    width: 125px;
+    width: 140px;
     font-family: inherit;
     margin: 15px auto 0 auto;
     transition: all 0.3s ease;
