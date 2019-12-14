@@ -10,8 +10,10 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.3.2",
+    "element-ui": "^2.13.0",
     "es6-promise": "^4.2.8",
     "jquery": "^3.4.1",
+    "v-distpicker": "^1.2.2",
     "vue": "^2.6.10",
     "vue-beauty": "^2.0.0-beta.19",
     "vue-resource": "^1.5.1",
@@ -38,10 +40,10 @@
     ],
     "rules": {
       "generator-star-spacing": "off",
-      "no-tabs":"off",
-      "no-unused-vars":"off",
-      "no-console":"off",
-      "no-irregular-whitespace":"off",
+      "no-tabs": "off",
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "no-irregular-whitespace": "off",
       "no-debugger": "off"
     },
     "parserOptions": {

@@ -3,20 +3,48 @@
         <meta name="referrer" content="no-referrer"/>
         <div class="back"><img src="../../assets/back.png"></div>
         <div class="bookContainer">
-            <div class="bookname">《{{bookinfo.bookname}}》</div>
-            <div class="bookInfo">
 
-                <div class="book-pic-container">
-                    <img :src="bookinfo.bookpic"/>
+            <div class="bookname">{{bookinfo.bookname}}</div>
+            <div class="bookInfo">
+                <div class="left-side">
+                    <div class="book-pic-container">
+                        <img :src="bookinfo.bookpic"/>
+                    </div>
+                    <div class="detailInfo">
+                        <div class="writer">作者:{{bookinfo.writer}}</div>
+                        <div class="press">出版社:{{bookinfo.press}}</div>
+                        <div class="OriginName">原作名:</div>
+                        <div class="translator">译者:</div>
+                        <div class="publishDate">出版年月日:</div>
+                        <div class="page">页数:</div>
+                    </div>
                 </div>
-                <div class="bookdescription">{{bookinfo.description}}</div>
+                <div class="description">
+                    <div class="descriptionTitle">内容简介</div>
+                    <div class="bookdescription">{{bookinfo.description}}</div>
+                </div>
             </div>
+        </div>
+        <div class="address">
+            <div class="addressTitle">收货地址</div>
+            <div v-show="userinfo.address">
+                <div class="addAddress"></div>
+            </div>
+            <el-button type="primary" @click="showDialog">添加新地址</el-button>
+                <!--todo:改成弹框-->
+            <addNewAddress></addNewAddress>
+
+        </div>
+        <div class="submit">
+            <el-button type="danger">提交</el-button>
         </div>
     </section>
 </template>
 
 <script>
     import { api } from '../../request/api'
+    import addNewAddress from '../../components/common/addNewAddress'
+
 
     export default {
         name: "getBook",
@@ -27,11 +55,16 @@
                     "writer": "米兰昆德拉",
                     "press": "unknown"
                 },
-                bookinfo: {}
+                bookinfo: {},
+                userinfo: {},
+                form: {}
             }
         },
         mounted: function () {
             this.getBook(this.bookInfo);
+        },
+        components:{
+            addNewAddress
         },
         methods: {
             getBook: function (bookInfo) {
@@ -51,6 +84,13 @@
                         that.bookinfo = bookinfo
                     }
                 }))
+            },
+            getUserInfo: function () {
+
+            },
+            showDialog: function () {
+                let that = this
+                that.showModel = true
             }
         }
     }
@@ -108,45 +148,78 @@
     }
 
     .getBook_Container {
-        padding: 0 2em;
+        padding: 0 2em 0.4em;
+        font-family: "Microsoft YaHei", sans-serif;
     }
 
     .bookContainer {
         display: flex;
         flex-direction: column;
+        padding: 0.6em 0;
     }
 
     .book-pic-container {
-        height: 5em;
-        width: 5em;
-        border: 0.01em rgba(119, 136, 153, 0.4) bold;
+
     }
 
     .book-pic-container img {
-        max-height: 4.9em;
-        max-width: 4.9em;
+        max-width: 2em;
         height: auto;
         width: auto;
     }
 
     .bookname {
-        font-size: .24em;
+        font-size: .3em;
+        color: #393e46;
+        letter-spacing: 0.1em;
     }
 
     .bookInfo {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        margin-top: 0.1em;
+    }
+
+    .back img {
+        height: 0.5em;
+        width: 0.5em;
     }
 
     .back {
+        display: flex;
+        align-item: center;
         position: absolute;
-        left:0.2em;
-        top:0;
+        left: 0.2em;
+        top: 0.2em;
     }
-    .back img{
-        height:0.5em;
-        width:0.5em;
+
+    .bookdescription {
+        font-size: 0.24em;
+    }
+
+    .descriptionTitle {
+        font-size: 0.3em;
+    }
+
+    .description {
+        border-left: 0.01em #bbbbbb solid;
+        padding-left: 0.1em;
+        margin-left: 0.6em;
+    }
+
+    .detailInfo {
+        font-family: "Microsoft YaHei", sans-serif;
+        font-size: .24em;
+        margin-left: 0.5em;
+    }
+
+    .addressTitle {
+        font-size: 0.3em;
+    }
+
+    .left-side {
+        display: flex;
+        flex-direction: row;
     }
 
     [v-cloak] {
