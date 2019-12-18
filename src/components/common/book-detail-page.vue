@@ -170,6 +170,12 @@ export default {
 }
 
 .upper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    width: 650px;
+    height: 400px;
     background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     -moz-transform-style: preserve-3d;
     -moz-backface-visibility: hidden;
@@ -178,15 +184,17 @@ export default {
 }
 
 .upper img {
-    width: 650px;
-    height: 400px;
+    max-height: 400px;
+    width: auto;
+    max-width: 650px;
+    height: auto;
 }
 
 .upper h2 {
     left: 0;
     top: 0;
     margin: auto;
-    color: #515151;
+    color: #ffffff;
     text-align: center;
     text-transform: uppercase;
     font-weight: 500;
@@ -211,7 +219,7 @@ export default {
     border-radius: 10px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     z-index: 2;
-    background: #fff;
+    background: #3f3f3c4f;
 }
 
 .lower {
