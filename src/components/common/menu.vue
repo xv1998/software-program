@@ -9,7 +9,7 @@
 
         <router-link to="/mainPage" class="menu-item blue">主页</router-link>
         <router-link to="" class="menu-item green"> 收藏</router-link>
-        <router-link to="" class="menu-item red"> </router-link>
+        <router-link to="/manager" class="menu-item red"> 管理员</router-link>
         <router-link to="/" class="menu-item purple"> 退出</router-link>
         <router-link to="" class="menu-item orange"> 历史</router-link>
         <router-link to="/publish" class="menu-item lightblue"> 发布</router-link>

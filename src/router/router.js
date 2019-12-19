@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import login from '../components/pages/login'
 import mainPage from '../components/pages/mainPage'
 import publish from  '../components/pages/publish'
+import manager from  '../components/pages/managerMainPage'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
             path: '/publish',
             name: 'publish',
             component: publish
+        },
+        {
+            path:'/manager',
+            name:'manager',
+            component: manager
         }
     ]
 })

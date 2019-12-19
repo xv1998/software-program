@@ -36,7 +36,7 @@
                             <div class="button2 button" v-on:click="back">BACK</div>
                             <el-form-item label="捐赠对象" prop="donateTo" style="margin-top:45px">
                                 <el-cascader v-model="addMess.donateTo" value="addMess.donateTo"  :options="options"
-                                             :show-all-levels="false"></el-cascader>
+                                             :show-all-levels="false" @change="chooseDonate"></el-cascader>
                             </el-form-item>
                         </div>
                         <div class="right">
@@ -64,6 +64,26 @@
                 </el-form>
             </div>
         </div>
+        <!---------------------------------收货弹框-------------------------------------->
+        <el-dialog title="订单信息" :visible.sync="dialogFormVisible">
+            <el-form :model="deliveryForm">
+                <el-form-item label="订单号" :label-width="formLabelWidth">
+                    <el-input v-model="deliveryForm.id" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="快递公司" :label-width="formLabelWidth">
+                    <el-select v-model="deliveryForm.business" placeholder="请选择快递公司">
+                        <el-option label="顺丰" value="顺丰"></el-option>
+                        <el-option label="中通" value="中通"></el-option>
+                        <el-option label="圆通" value="圆通"></el-option>
+                        <el-option label="百世" value="百世"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="confirmDelivery">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -80,6 +100,12 @@ export default {
             param: function(){
                 return new FormData()
             },
+            dialogFormVisible: false,
+            deliveryForm: {
+                id: '',
+                business: '',
+            },
+            formLabelWidth: '120px',
             top: 'top',
             upper: true,
             dialogVisible: false,
@@ -176,9 +202,14 @@ export default {
                         if (res.data.msg === 'ok') {
                             window.console.log(res.data)
                             that.$message.success('success')
+                            that.getBottle().catch(e=>{
+                                throw Error(e)
+                            })
                         }else{
                             that.$message.error(res.data.msg)
                         }
+                    }).catch(e =>{
+                        that.$message.error(e)
                     })
                 } else {
                     this.$message.error('请填写资料完整')
@@ -196,6 +227,18 @@ export default {
                     that.$message.error(res.data.msg)
                 }
             })
+        },
+        chooseDonate: function(value){
+            if(value.length !== 1){
+                this.dialogFormVisible = true
+            }
+        },
+        confirmDelivery: function () {
+            if (this.deliveryForm.business && this.deliveryForm.id) {
+                this.dialogFormVisible = false
+            }else {
+                this.$message.error('请填写完整资料')
+            }
         }
     }
 }

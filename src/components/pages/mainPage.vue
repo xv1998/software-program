@@ -45,7 +45,7 @@ export default {
             const that = this
             let id = (Math.ceil(Math.random()*that.Global.bottleNum))
             window.console.log(id)
-            this.$http.post('/getBottle/',{ 'botid': id}).then(res=>{
+            this.$http.post('/visBottle/',{ 'idx': id}).then(res=>{
                 if (res.data.msg === 'success') {
                     const bottles = JSON.parse(localStorage.getItem('user_bottle'))
                     bottles.forEach(item=>{
