@@ -4,6 +4,7 @@ import login from '../components/pages/login'
 import mainPage from '../components/pages/mainPage'
 import getBook from '../components/pages/getBook'
 import publish from '../components/pages/publish'
+import manager from  '../components/pages/managerMainPage'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
             meta: {
                 requireAuth: true
             }
+        },
+        {
+            path:'/manager',
+            name:'manager',
+            component: manager
         }
     ]
 })

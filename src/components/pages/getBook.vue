@@ -28,23 +28,34 @@
         <div class="address">
             <div class="addressTitle">收货地址</div>
             <div v-show="address">
-                <div v-for="item in address" :key="item">
+                <div v-for="(item,index) in address" :key="index" @change="onCheckradio(index)">
                     <div class="radioClass">
-                        <el-radio border>{{item.name}}</el-radio>
+                        <el-radio v-model="radio" :label="index" border>{{item.name}}</el-radio>
                         <div class="addressInfo">
                             {{item.name}} {{item.province}} {{item.city}} {{item.district}} {{item.specific}}
                             {{hidePhone(item.phonenumber)}}
                         </div>
+                        <div class="edit hoverShow" @click="editAddress(index)">编辑</div>
+                        <div class="delete hoverShow" @click="deleteAddress(index)">删除</div>
+                        <div class="setDefault hoverShow" @click="setDefault">设为默认地址</div>
                     </div>
                 </div>
             </div>
             <el-button type="primary" @click="showDialog">添加新地址</el-button>
-            <!--todo:改成弹框-->
-            <addNewAddress :showModel="showModel"></addNewAddress>
-
+            <addNewAddress :showModel="showModel" :form="form" v-on:address="addNewAddress" @close="closeDialog"></addNewAddress>
+        </div>
+        <div class="credit">
+            <div class="needed_credit">
+                该书需要:{{bookInfo.neededcredit}}
+            </div>
+            <div class="user_credit">
+                你的积分:{{userinfo.credit}}</div>
+            <div class="rest">
+                剩余积分:{{countCredit}}
+            </div>
         </div>
         <div class="submit">
-            <el-button type="danger">提交</el-button>
+            <el-button type="danger" @click="pickBook">提交</el-button>
         </div>
     </section>
 </template>
@@ -62,9 +73,10 @@
                 bookInfo: {},
                 userinfo: {},
                 form: {},
-                radio: 1,
+                radio: 0,
                 showModel: false,
-                address: []
+                address: [],
+                selectedAddress:0
             }
         },
         mounted: function () {
@@ -73,29 +85,34 @@
             that.bookInfo = {
                 bookname: data.bookName,
                 writer: data.writer,
-                press: data.press
+                press: data.press,
             }
+            this.botid=data.botid
             // TODO 如果无数据或者无cookie 检查
             let userinfo = this.getUserInfo()
             userinfo = JSON.parse(userinfo)
-            let address = JSON.parse(userinfo.address)
-            this.address = address.address
-            // TODO 将地址分成数组
+            this.address = JSON.parse(userinfo.address).address
+            this.userinfo=userinfo
             this.getBook(this.bookInfo);
-
         },
         components: {
             addNewAddress
         },
+        computed:{
+            countCredit:function(){
+                return this.userinfo.credit-this.bookInfo.neededcredit
+            }
+        },
         methods: {
             getBook: function (bookInfo) {
                 let that = this
-                this.$http.post("/getBookInfos/", {
+                this.$http.post(api.getBook, {
                     "bookname": that.bookInfo.bookname,
                     "writer": that.bookInfo.writer,
                     "press": that.bookInfo.press
                 }).then((response => {
                     let res = response.data
+                    console.log(response)
                     // TODO 增加返回失败的弹框提示
                     if (res.msg.indexOf('success') !== -1) {
                         let bookInfo = {
@@ -108,7 +125,102 @@
                         }
                         that.bookInfo = bookInfo
                     }
+                    else {
+                        console.log(res)
+                    }
                 }))
+            },
+            onCheckradio: function (item) {
+                this.selectedAddress=item
+            },
+            updateUserinfo: function () {
+                this.$http.post(api.getUserinfo).then(response => {
+                    if (response.data.msg === 'success') {
+                        window.console.log(response.data)
+                        localStorage.setItem('user_info', JSON.stringify(response.data))
+                    }
+                }).catch(e => {
+                    window.console.log(e)
+                })
+            },
+            editAddress: function (index) {
+                let address = this.address[index]
+                this.form = address
+                this.form.address = {
+                    "province": address.province,
+                    "city": address.city,
+                    "district": address.district
+                }
+                this.form.index = index
+                this.showModel = true
+            },
+            deleteAddress: function (index) {
+                this.$confirm('您确定要删除该收货地址吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.address.splice(index, 1)
+                    console.log(this.address)
+                    this.postNewAddress(this.address)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            setDefault: function () {
+            },
+            postNewAddress: function (address) {
+                address = {
+                    "address": this.address
+                }
+                let addressString = JSON.stringify(address)
+                this.$http.post(api.update, {
+                    "new_address": addressString
+                }).then(response => {
+                    if(response.data.msg==='success'){
+                    this.$message({
+                        message: '添加地址成功',
+                        type: 'success'
+                    })}
+                    else if (response.data.msg==='fail'){
+                        this.$message.error('添加地址失败')
+                    }
+                }).catch(e=>{
+
+                })
+                this.updateUserinfo()
+            },
+            pickBook:function(){
+                console.log(this.botid)
+                let address=this.address[this.selectedAddress]
+                this.$http.post(api.pickBook,{
+                    "botid":this.botid,
+                    "address":address
+                }).then(response=>{
+                    console.log(response)
+                })
+            },
+            addNewAddress: function (data) {
+                let address = data
+                delete address.address
+                if (Number.isInteger(address.index)) {
+                    this.address[address.index] = address
+                    this.form={}
+                    delete address.index
+                }
+                else {
+                    this.address.push(address)
+
+                }
+                this.showModel = false
+                this.postNewAddress(address)
             },
             getUserInfo: function () {
                 let userinfo = localStorage.getItem('user_info')
@@ -124,7 +236,10 @@
             showDialog: function () {
                 this.showModel = true
             },
-            closeDialog: function () {
+            closeDialog: function (data) {
+                if(Number.isInteger(data)){
+                    this.form={}
+                }
                 this.showModel = false
             }
         }
@@ -201,6 +316,11 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        margin: .2em;
+    }
+
+    .el-radio {
+        width: 120px;
     }
 
     .addressInfo {
@@ -260,12 +380,43 @@
 
     .addressTitle {
         font-size: 0.3em;
-        margin-bottom:.3em;
+        margin-bottom: .3em;
     }
 
     .left-side {
         display: flex;
         flex-direction: row;
+    }
+
+    .edit, .delete, .setDefault {
+        display: none;
+    }
+
+    .hoverShow {
+        font-size: .2em;
+        margin: 0 .8em;
+        color: #4682B4;
+        cursor: pointer;
+    }
+
+    .radioClass:hover {
+        background: aliceblue;
+    }
+
+    .radioClass:hover .edit {
+        display: block;
+    }
+
+    .radioClass:hover .delete {
+        display: block;
+    }
+
+    .radioClass:hover .setDefault {
+        display: block;
+    }
+    .credit{
+        margin-top:.8em;
+        font-size:.24em;
     }
 
     [v-cloak] {

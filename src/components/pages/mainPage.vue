@@ -3,7 +3,7 @@
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
 <!--        <button @click="showDetail">show</button>-->
-        <bookDetailPage :bookId=1 :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" :press="bookDetail.press" :writer="bookDetail.writer" v-on:close="closeDialog"></bookDetailPage>
+        <bookDetailPage :bookId=1 :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" :press="bookDetail.press" :writer="bookDetail.writer" :botid="bookDetail.botid" v-on:close="closeDialog"></bookDetailPage>
     </div>
 </template>
 
@@ -45,7 +45,7 @@ export default {
             const that = this
             let id = (Math.ceil(Math.random()*that.Global.bottleNum))
             window.console.log(id)
-            this.$http.post('/getBottle/',{ 'botid': id}).then(res=>{
+            this.$http.post('/visBottle/',{ 'idx': id}).then(res=>{
                 if (res.data.msg === 'success') {
                     const bottles = JSON.parse(localStorage.getItem('user_bottle'))
                     bottles.forEach(item=>{

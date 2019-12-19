@@ -7,8 +7,8 @@
                     <h1>add</h1>
                 </div>
 
-                <el-form :model="addMess" :rules="rules" :label-position="top">
-                    <div class="content-container" v-if="upper">
+                <el-form :model="addMess" :rules="rules" :label-position="top" ref="addMess">
+                    <div class="content-container" v-show="upper">
                         <div class="left">
                             <el-form-item label="书名" prop="name">
                                 <el-input v-model="addMess.name" type="text" placeholder="bookname"
@@ -25,22 +25,22 @@
                             <div class="button1 button yellow" v-on:click="next">next</div>
                         </div>
                         <div class="comment">
-                            <el-form-item label="书评" required>
+                            <el-form-item label="书评" required prop="comment">
                                 <el-input v-model="addMess.comment" type="textarea" rows="15" cols="10"
                                           placeholder="write down your thoughts"></el-input>
                             </el-form-item>
                         </div>
                     </div>
-                    <div class="pic-container" v-else>
+                    <div class="pic-container" v-show="!upper">
                         <div class="left down">
                             <div class="button2 button" v-on:click="back">BACK</div>
-                            <el-form-item label="捐赠对象" prop="picker" style="margin-top:45px">
-                                <el-cascader v-model="addMess.donateTo" :options="options"
-                                             :show-all-levels="false"></el-cascader>
+                            <el-form-item label="捐赠对象" prop="donateTo" style="margin-top:45px">
+                                <el-cascader v-model="addMess.donateTo" value="addMess.donateTo"  :options="options"
+                                             :show-all-levels="false" @change="chooseDonate"></el-cascader>
                             </el-form-item>
                         </div>
                         <div class="right">
-                            <el-form-item label="图片上传" required class="picture-box">
+                            <el-form-item label="图片上传" prop="pictureUrl" class="picture-box">
                                 <el-upload
                                         action="#"
                                         ref="upload"
@@ -57,13 +57,33 @@
                                 </el-dialog>
                             </el-form-item>
                             <el-form-item>
-                                <el-button class=" button yellow" style="width:100px;margin-top:30px; float:right" @click="submit(addMess)">发布</el-button>
+                                <el-button class=" button yellow" style="width:100px;margin-top:30px; float:right" @click="submit('addMess')">发布</el-button>
                             </el-form-item>
                         </div>
                     </div>
                 </el-form>
             </div>
         </div>
+        <!---------------------------------收货弹框-------------------------------------->
+        <el-dialog title="订单信息" :visible.sync="dialogFormVisible">
+            <el-form :model="deliveryForm">
+                <el-form-item label="订单号" :label-width="formLabelWidth">
+                    <el-input v-model="deliveryForm.id" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="快递公司" :label-width="formLabelWidth">
+                    <el-select v-model="deliveryForm.business" placeholder="请选择快递公司">
+                        <el-option label="顺丰" value="顺丰"></el-option>
+                        <el-option label="中通" value="中通"></el-option>
+                        <el-option label="圆通" value="圆通"></el-option>
+                        <el-option label="百世" value="百世"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="confirmDelivery">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -77,7 +97,15 @@ export default {
     },
     data() {
         return {
-            param:'',//表单要提交的参数
+            param: function(){
+                return new FormData()
+            },
+            dialogFormVisible: false,
+            deliveryForm: {
+                id: '',
+                business: '',
+            },
+            formLabelWidth: '120px',
             top: 'top',
             upper: true,
             dialogVisible: false,
@@ -88,7 +116,7 @@ export default {
                 publisher: '',
                 comment: '',
                 pictureUrl: '',
-                donateTo: ''
+                donateTo: []
             },
             rules: {
                 name: [
@@ -100,9 +128,11 @@ export default {
                 publisher: [
                     { required: true, message: '请输入出版社', trigger: 'blur' }
                 ],
-                picker: [
-                    { required: true, message: '请至少选择一个', trigger: 'blur' }
-                ]
+                donateTo: [
+                    { type: 'array', required: true, message: '请至少选择一个', trigger: 'change' }
+                ],
+                comment:[{ required: true, message: '请输入您的感想', trigger: 'blur' }],
+                pictureUrl:[{ required: true, message: '请选择图片'}]
             },
             options: [{
                 value: '1',
@@ -137,11 +167,12 @@ export default {
         handleRemove() {
         },
         handlePictureCardPreview(file) {
-            this.addMess.pictureUrl = file.url
+            this.addMess.pictureUrl = file.raw
             this.dialogVisible = true
         },
         changeUpload: function(file){
-            this.addMess.pictureUrl = file.url
+            window.console.log(file)
+            this.addMess.pictureUrl = file.raw
         },
         submit(formName) {
             const that = this
@@ -149,35 +180,65 @@ export default {
                 let re = /^[0-9]+.?[0-9]*/
                 return re.test(number)
             }
-            if (formName){
-                if (formName.donateTo.length !== 1){
-                    window.console.log(formName.donateTo)
-                    formName.donateTo.forEach(item =>{
-                        if (_isNumber(item))
-                            formName.donateTo = parseInt(item)
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let formName = that.addMess
+                    if (formName.donateTo.length !== 1){
+                        formName.donateTo.forEach(item =>{
+                            if (_isNumber(item))
+                                formName.donateTo = parseInt(item)
+                        })
+                    }
+                    that.param = new FormData();
+                    that.param.append('bookname', formName.name)
+                    that.param.append('writer', formName.author)
+                    that.param.append('description', formName.comment)
+                    that.param.append('press', formName.publisher)
+                    that.param.append('timeouthandle', 'true')
+                    that.param.append('sendto', formName.donateTo)
+                    that.param.append('img_obj', formName.pictureUrl)
+                    window.console.log(this.param)
+                    that.$http.post('/addBottle/',that.param).then(res =>{
+                        if (res.data.msg === 'ok') {
+                            window.console.log(res.data)
+                            that.$message.success('success')
+                            that.getBottle().catch(e=>{
+                                throw Error(e)
+                            })
+                        }else{
+                            that.$message.error(res.data.msg)
+                        }
+                    }).catch(e =>{
+                        that.$message.error(e)
                     })
+                } else {
+                    this.$message.error('请填写资料完整')
                 }
-                this.param = new FormData();
-                this.param.append('bookname', formName.name)
-                this.param.append('writer', formName.author)
-                this.param.append('press', formName.publisher)
-                this.param.append('timeouthandle', 'true')
-                this.param.append('sendto', formName.donateTo)
-                window.console.log(this.param)
-                this.$http.post('/addBottle/',that.param).then(res =>{
-                    window.console.log(res)
-                })
-            }else {
-                that.$message.error('请填写资料完整')
-            }
-            // this.$refs[formName].validate((valid) => {
-            //     if (valid) {
-            //         alert('submit!')
-            //     } else {
-            //         return false
-            //     }
+            })
             // this.$refs.upload.submit()
             // this.$refs.upload.clearFiles()
+        },
+        getBottle() {
+            const that = this
+            this.$http.post('/getBottleNum/').then(res =>{
+                if (res.data.msg === 'success') {
+                    localStorage.setItem('bottleNum', res.data.bottlenum)
+                }else{
+                    that.$message.error(res.data.msg)
+                }
+            })
+        },
+        chooseDonate: function(value){
+            if(value.length !== 1){
+                this.dialogFormVisible = true
+            }
+        },
+        confirmDelivery: function () {
+            if (this.deliveryForm.business && this.deliveryForm.id) {
+                this.dialogFormVisible = false
+            }else {
+                this.$message.error('请填写完整资料')
+            }
         }
     }
 }
