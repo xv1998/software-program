@@ -237,7 +237,7 @@ export default {
             if (this.deliveryForm.business && this.deliveryForm.id) {
                 this.dialogFormVisible = false
             }else {
-                this.$message.error('请填写完整资料')
+                this.$message.error('请选一个')
             }
         }
     }
