@@ -8,67 +8,84 @@
 <!--                <el-button size="small">评论</el-button>-->
 <!--            </el-badge>-->
         </el-header>
-        <el-main class="sideBar">
+        <el-col :span="5" class="sideBar">
             <el-row >
-                <el-col :span="4">
+                <el-col>
                     <el-menu
                             background-color="#545c64"
-                            default-active="2"
+                            default-active="3"
                             class="el-menu-vertical-demo"
                             text-color="#fff"
                             active-text-color="#ffd04b"
-                            @open="handleOpen"
-                            @close="handleClose">
-<!--                        <el-submenu index="1">-->
-<!--                            <template slot="title">-->
-<!--                                <i class="el-icon-menu"></i>-->
-<!--                                <span>订单管理</span>-->
-<!--                            </template>-->
-<!--                            <el-menu-item-group>-->
-<!--                                <template slot="title">分组一</template>-->
-<!--                                <el-menu-item index="1-1">选项1</el-menu-item>-->
-<!--                                <el-menu-item index="1-2">选项2</el-menu-item>-->
-<!--                            </el-menu-item-group>-->
-<!--                        </el-submenu>-->
+                            @select="handleSelect">
+                        <!--                        <el-submenu index="1">-->
+                        <!--                            <template slot="title">-->
+                        <!--                                <i class="el-icon-menu"></i>-->
+                        <!--                                <span>订单管理</span>-->
+                        <!--                            </template>-->
+                        <!--                            <el-menu-item-group>-->
+                        <!--                                <template slot="title">分组一</template>-->
+                        <!--                                <el-menu-item index="1-1">选项1</el-menu-item>-->
+                        <!--                                <el-menu-item index="1-2">选项2</el-menu-item>-->
+                        <!--                            </el-menu-item-group>-->
+                        <!--                        </el-submenu>-->
                         <el-menu-item index="1">
                             <i class="el-icon-tickets"></i>
                             <span slot="title">收书订单</span>
                         </el-menu-item>
-                        <el-menu-item index="3">
+                        <el-menu-item index="2">
                             <i class="el-icon-position"></i>
                             <span slot="title">寄书订单</span>
                         </el-menu-item>
-                        <el-menu-item index="4">
-                            <i class="el-icon-setting"></i>
-                            <span slot="title">导航四</span>
+                        <el-menu-item index="3">
+                            <i class="el-icon-document-add"></i>
+                            <span slot="title">添加图书信息</span>
                         </el-menu-item>
                     </el-menu>
                 </el-col>
             </el-row>
-        </el-main>
+        </el-col>
+        <el-row class="content">
+            <el-col :span="18" :push="6" class="orderform" v-show="showContent == 1">
+                <getbookorderform></getbookorderform>
+            </el-col>
+            <el-col :span="18" :push="6" class="orderform" v-show="showContent == 3">
+                <addbookinfo></addbookinfo>
+            </el-col>
+        </el-row>
     </el-container>
 </template>
 
 <script>
 import menubar from '../../components/common/menu.vue'
+import getbookorderform from '../../components/common/getbookOrderForm'
+import addbookinfo from  '../../components/common/addBookInfo'
+
 export default {
     name: "",
     components: {
         menubar,
+        getbookorderform,
+        addbookinfo
+    },
+    data(){
+        return{
+            showContent: 3,
+        }
     },
     methods:{
-        handleOpen(key, keyPath) {
-            window.console.log(key, keyPath);
+        handleSelect(key) {
+            this.showContent = key
         },
-        handleClose(key, keyPath) {
-            window.console.log(key, keyPath);
-        }
     }
 }
 </script>
 
 <style scoped>
 .header{
+    position: fixed;
+    z-index: 10;
+    background: #fff;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -85,7 +102,21 @@ export default {
     margin: auto 0;
 }
 .sideBar{
-    height: 100%;
+    z-index: 10;
+    position: fixed;
+    top: 60px;
     padding: 0;
+}
+.sideBar ul{
+    height: calc(100vh - 60px);
+}
+.content{
+    height: calc(100vh - 60px);
+    max-width: 100vw;
+    z-index: 1;
+    top: 60px;
+}
+.orderform{
+    height: 100%;
 }
 </style>

@@ -328,7 +328,7 @@ export default {
     font-family: cursive;
     font-size: 14px;
     line-height: 20px;
-    color: #727272;
+    color: #b4b4b4;
 }
 .description section::-webkit-scrollbar
 {
