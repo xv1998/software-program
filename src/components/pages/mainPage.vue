@@ -3,7 +3,7 @@
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
 <!--        <button @click="showDetail">show</button>-->
-        <bookDetailPage :bookId=1 :showDialog="showDialog" v-on:close="closeDialog"></bookDetailPage>
+        <bookDetailPage :bookId=1 :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" :press="bookDetail.press" :writer="bookDetail.writer" v-on:close="closeDialog"></bookDetailPage>
     </div>
 </template>
 
@@ -22,15 +22,52 @@ export default {
     data() {
         return {
             showDialog: false,
+            bookDetail:{
+                bookname: "",
+                writer: "",
+                press: "",
+                description: "",
+                photourls: "",
+                ispicked: false,
+                isdonated: false,
+                donateTo: 1,
+                collect: false,
+                uploaddatetime: "",
+            }
         }
     },
+    created:function() {
+        this.Global.bottleNum = parseInt(localStorage.getItem('bottleNum'))
+    },
     methods: {
+        // 显示图书内容
         showDetail: function () {
+            const that = this
+            let id = (Math.ceil(Math.random()*that.Global.bottleNum))
+            window.console.log(id)
+            this.$http.post('/getBottle/',{ 'botid': id}).then(res=>{
+                if (res.data.msg === 'success') {
+                    const bottles = JSON.parse(localStorage.getItem('user_bottle'))
+                    bottles.forEach(item=>{
+                        if (item[0] && item[0] === id && item[1] === 0){
+                            res.data.collect = true
+                        }else{
+                            res.data.collect = false
+                        }
+                    })
+                    that.bookDetail = res.data
+                    window.console.log(that.bookDetail)
+                }else{
+                    that.$message.error(res.data.msg)
+                }
+            })
             this.showDialog = true
         },
+        // 关闭卡片
         closeDialog: function (show) {
             this.showDialog = show
         },
+        // 初始化
         inition: function () {
             let _this = this
             var Dots = function (speed, alpha) {
@@ -244,10 +281,23 @@ export default {
                 speed: 0.1,
                 clickWithDotsNumber: 5
             })
+        },
+        // 获取用户收藏记录
+        getCollected: function () {
+            const that = this
+            this.$http.post('/getStarInfos/').then(res=>{
+                if (res.data.msg === 'success') {
+                    window.console.log(res.data)
+                    localStorage.setItem('user_bottle', JSON.stringify(res.data.bottles))
+                }else{
+                    that.$message.error(res.data.msg)
+                }
+            })
         }
     },
     mounted() {
         this.inition()
+        this.getCollected()
     },
 }
 </script>
