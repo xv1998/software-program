@@ -193,26 +193,28 @@ export default {
                 function createDot(e) {
                     let tx = e.pageX,
                         ty = e.pageY;
-                    // window.console.log(ty, tx)
-                    if ((tx > 0 && tx < width) && (ty > 0 && ty < height)) {
+                    if (!_this.showDialog) {
+                        // window.console.log(ty, tx)
+                        if ((tx > 0 && tx < width) && (ty > 0 && ty < height)) {
 
-                        let dotsmap = dotsArr.concat()
-                        dotsmap.forEach(item =>{
-                            // window.console.log(Math.floor(item.y))
-                            let x = Math.round(item.x)
-                            let y = Math.round(item.y)
-                            // window.console.log(y ,x)
-                            if ( (ty-5) <= y && y <= (ty+5)&&(tx-5) <= x && x <= (tx+5)) {
-                                // window.console.log('点中了！')
-                                _this.showDetail()
-                            }
-                        })
-                        // for (let i = 0; i < clickWithNew; i ++) {
-                        //     let dot = new Dots(opts.speed, opts.dotsAlpha);
-                        //     dotsArr.push(dot);
-                        //     dotsNum += 1;
-                        //     dot.init(canvas, tx, ty);
-                        // }
+                            let dotsmap = dotsArr.concat()
+                            dotsmap.forEach(item =>{
+                                // window.console.log(Math.floor(item.y))
+                                let x = Math.round(item.x)
+                                let y = Math.round(item.y)
+                                // window.console.log(y ,x)
+                                if ( (ty-5) <= y && y <= (ty+5)&&(tx-5) <= x && x <= (tx+5)) {
+                                    // window.console.log('点中了！')
+                                    _this.showDetail()
+                                }
+                            })
+                            // for (let i = 0; i < clickWithNew; i ++) {
+                            //     let dot = new Dots(opts.speed, opts.dotsAlpha);
+                            //     dotsArr.push(dot);
+                            //     dotsNum += 1;
+                            //     dot.init(canvas, tx, ty);
+                            // }
+                        }
                     }
                 }
 
@@ -306,6 +308,7 @@ export default {
 
 <style scoped>
 #mainPage {
+    z-index: -1;
     width: 100vw;
     height: 100vh;
     overflow: hidden;

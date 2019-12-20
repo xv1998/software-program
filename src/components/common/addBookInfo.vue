@@ -57,9 +57,21 @@ export default {
     },
     methods: {
         submitForm(formName) {
+            const that = this
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    alert('submit!');
+                    that.$http.post('/addBook/',{
+                        bookname: that.bookForm.name,
+                        writer: that.bookForm.writer,
+                        press: that.bookForm.press,
+                        neededcredit: that.bookForm.credit
+                    }).then( res =>{
+                        if (res.data.msg === 'success'){
+                            that.$message.success('创建成功')
+                        }else{
+                            that.$message.error(res.data.msg)
+                        }
+                    }).catch()
                 } else {
                     window.console.log('error submit!!');
                     return false;
