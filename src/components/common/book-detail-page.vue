@@ -20,7 +20,8 @@
                     </div>
                     <el-button class="button" type="info" plain disabled v-if="state == 4">HAD BEEN PICKED</el-button>
                     <el-button class="button" type="info" plain disabled v-else-if="state == 1">PREPARING</el-button>
-                    <el-button class="button" type="info" plain v-else-if="state == 2">GET</el-button>
+                    <el-button @click="getBook" class="button" type="info" plain v-else-if="state == 2">GET</el-button>
+                    {{press}}
                 </div>
 
             </div>
@@ -67,6 +68,16 @@ export default {
         bookIntro: {
             type: String,
             default: '全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧,全书由作者的序言、后记，以及主角大庭叶藏的三个手札组成，描写主角从青少年到中年，为了逃避现实而不断沉沦，经历自我放逐、酗酒、自杀、用药物麻痹自己，终于一步步走向自我毁灭的悲剧'
+        },
+        press:{
+            type:String,
+            default:'haha'
+        },
+        writer:{
+            type:String
+        },
+        botid:{
+            type:Number
         }
     },
     data() {
@@ -117,6 +128,19 @@ export default {
                 }else{
                     that.$message.error(res.data.msg)
                 }
+            })
+        },
+        getBook:function(){
+            let that = this
+            this.$router.push({
+                name:'getBook',
+                params:{
+                    bookName:that.bookName,
+                    writer:that.writer,
+                    press:that.press,
+                    botid:that.botid
+                }
+
             })
         }
     }

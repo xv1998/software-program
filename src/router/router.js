@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '../components/pages/login'
 import mainPage from '../components/pages/mainPage'
-import publish from  '../components/pages/publish'
+import getBook from '../components/pages/getBook'
+import publish from '../components/pages/publish'
 import manager from  '../components/pages/managerMainPage'
 
 Vue.use(Router)
@@ -12,7 +13,7 @@ export default new Router({
         {
             path: '/',
             name: 'login',
-            component: login
+            component: login,
         },
         {
             path: '/mainPage',
@@ -20,9 +21,20 @@ export default new Router({
             component: mainPage
         },
         {
+            path: '/getBook',
+            name: 'getBook',
+            component: getBook,
+            meta: {
+                requireAuth: true
+            }
+        },
+        {
             path: '/publish',
             name: 'publish',
-            component: publish
+            component: publish,
+            meta: {
+                requireAuth: true
+            }
         },
         {
             path:'/manager',

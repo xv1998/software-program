@@ -145,6 +145,8 @@ export default {
                     case 'success': {
                         that.$message.success("登录成功")
                         that.$cookies.set('sessionid', `${res.data.sessionid}`)
+                        window.console.log(that.$store)
+                        that.$store.commit("saveSession", res.data)
                         that.Global.bottleNum = res.data.bottlenum
                         localStorage.setItem('bottleNum', res.data.bottlenum)
                         that.$router.push({ name: 'mainPage' })
@@ -165,7 +167,7 @@ export default {
                 that.$http.post('/getUserInfos/').then(res1 => {
                     if (res1.data.msg === 'success') {
                         window.console.log(res1.data)
-                        localStorage.setItem('user_info',res1.data)
+                        localStorage.setItem('user_info',JSON.stringify(res1.data))
                     }
                 })
             }).catch(e => {

@@ -2,7 +2,6 @@
     <div id="mainPage">
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
-<!--        <button @click="showDetail">show</button>-->
         <bookDetailPage :bookId="id" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
     </div>
 </template>
