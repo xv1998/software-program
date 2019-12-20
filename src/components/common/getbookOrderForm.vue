@@ -2,7 +2,7 @@
     <div class="container">
         <el-table
                 ref="filterTable"
-                :data="tableData"
+                :data="tables"
                 height="450"
                 @cell-click="changeTag"
                 style="width: 100%">
@@ -10,7 +10,7 @@
                     prop="date"
                     label="日期"
                     sortable
-                    width="180"
+                    width="120"
                     column-key="date"
                     :filters="dateFilter"
                     :filter-method="dateFilterHandler"
@@ -24,7 +24,7 @@
             <el-table-column
                     prop="orderId"
                     label="订单号"
-                    width="400"
+                    width="350"
                     :formatter="formatter">
             </el-table-column>
             <el-table-column
@@ -52,6 +52,7 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-input v-model="searchContent" style="width: 350px;margin-right: 20px;" size="medium" placeholder="输入关键字搜索"></el-input>
         <el-button class="btn" @click="resetDateFilter">清除日期过滤器</el-button>
         <el-button @click="clearFilter">清除所有过滤器</el-button>
         <!---------------------------------更改状态弹框-------------------------------------->
@@ -77,8 +78,11 @@ export default {
     name: "getbookorderform",
     data(){
         return{
+            searchContent:'',
             dialogFormVisible: false,
             dateFilter:[],
+            inSearch:false,
+            searchData:[],
             state:'', // 临时状态存储
             selectedRow:'', // 被选中的瓶子
             tableData: [{
@@ -150,6 +154,19 @@ export default {
         }
         window.console.log(this.dateFilter)
     },
+    computed:{
+        tables:function(){
+            let search = this.searchContent
+            if(search){
+                return  this.tableData.filter(function(dataNews){
+                    return Object.keys(dataNews).some(function(key){
+                        return String(dataNews[key]).toLowerCase().indexOf(search) > -1
+                    })
+                })
+            }
+            return this.tableData
+        }
+    },
     methods: {
         resetDateFilter() {
             this.$refs.filterTable.clearFilter('date');
@@ -190,13 +207,24 @@ export default {
             }else {
                 this.$message.error('请选择状态')
             }
-        }
+        },
+        // searchTable(){
+        //     const that = this
+        //     if (this.searchContent !== "") {
+        //         this.inSearch = true
+        //         this.searchData = this.tableData.filter(data => data.orderId.indexOf(that.searchContent))
+        //         return
+        //     }
+        //     this.inSearch = false
+        //     this.searchData = []
+        // }
     }
 }
 </script>
 
 <style scoped>
 .container{
+    z-index: 10;
     width: 100%;
     height: 100%;
     margin: auto;

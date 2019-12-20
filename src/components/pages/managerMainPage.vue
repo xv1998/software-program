@@ -13,7 +13,7 @@
                 <el-col>
                     <el-menu
                             background-color="#545c64"
-                            default-active="3"
+                            default-active="1"
                             class="el-menu-vertical-demo"
                             text-color="#fff"
                             active-text-color="#ffd04b"
@@ -70,7 +70,7 @@ export default {
     },
     data(){
         return{
-            showContent: 3,
+            showContent: 1,
         }
     },
     methods:{

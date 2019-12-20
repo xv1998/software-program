@@ -2,8 +2,7 @@
     <div id="mainPage">
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
-<!--        <button @click="showDetail">show</button>-->
-        <bookDetailPage :bookId=1 :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" :press="bookDetail.press" :writer="bookDetail.writer" :botid="bookDetail.botid" v-on:close="closeDialog"></bookDetailPage>
+        <bookDetailPage :bookId="id" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
     </div>
 </template>
 
@@ -22,10 +21,12 @@ export default {
     data() {
         return {
             showDialog: false,
+            id:'',
             bookDetail:{
                 bookname: "",
                 writer: "",
                 press: "",
+                state:"",
                 description: "",
                 photourls: "",
                 ispicked: false,
@@ -45,6 +46,7 @@ export default {
             const that = this
             let id = (Math.ceil(Math.random()*that.Global.bottleNum))
             window.console.log(id)
+            this.id = id
             this.$http.post('/visBottle/',{ 'idx': id}).then(res=>{
                 if (res.data.msg === 'success') {
                     const bottles = JSON.parse(localStorage.getItem('user_bottle'))
