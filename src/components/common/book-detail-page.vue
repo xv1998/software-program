@@ -18,8 +18,9 @@
                     <div class="info">
                         <section>{{ bookIntro }}</section>
                     </div>
-                    <el-button class="button" type="info" plain disabled v-if="isDonated && ispicked">HAD BEEN PICKED</el-button>
-                    <el-button class="button" type="info" plain v-else-if="isDonated&& !ispicked">GET</el-button>
+                    <el-button class="button" type="info" plain disabled v-if="state == 4">HAD BEEN PICKED</el-button>
+                    <el-button class="button" type="info" plain disabled v-else-if="state == 1">PREPARING</el-button>
+                    <el-button class="button" type="info" plain v-else-if="state == 2">GET</el-button>
                 </div>
 
             </div>
@@ -31,6 +32,10 @@
 export default {
     name: "bookDetailPage",
     props: {
+        state:{
+            type: Number,
+            default: 1
+        },
         collect:{
             type: Boolean,
             default: false
