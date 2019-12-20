@@ -26,7 +26,19 @@ axios.interceptors.request.use((config) => {
 },(error) =>{
     return Promise.reject(error);
 });
-// TODO 实现登陆拦截
+axios.interceptors.response.use((response)=>{
+    let msg=response.data.msg
+    if(msg==='invalid'){
+        // 清除token信息
+        router.replace({
+            path:'/',
+            query: {redirect: router.currentRoute.fullPath}
+        })
+    }
+    return response
+},(error)=>{
+    return Promise.reject(error)
+});
 axios.defaults.withCredentials = true
 Vue.config.productionTip = false
 Vue.prototype.Global = globalData

@@ -35,9 +35,10 @@
                             {{item.name}} {{item.province}} {{item.city}} {{item.district}} {{item.specific}}
                             {{hidePhone(item.phonenumber)}}
                         </div>
+                        <el-tag type="info" v-show="item.isDefault">默认地址</el-tag>
                         <div class="edit hoverShow" @click="editAddress(index)">编辑</div>
                         <div class="delete hoverShow" @click="deleteAddress(index)">删除</div>
-                        <div class="setDefault hoverShow" @click="setDefault">设为默认地址</div>
+                        <div class="setDefault hoverShow" v-show="!item.isDefault" @click="setDefault(index)">设为默认地址</div>
                     </div>
                 </div>
             </div>
@@ -174,7 +175,9 @@
                     });
                 });
             },
-            setDefault: function () {
+            setDefault: function (index) {
+                this.address[index].isDefault=true
+                this.postNewAddress(this.address)
             },
             postNewAddress: function (address) {
                 address = {
