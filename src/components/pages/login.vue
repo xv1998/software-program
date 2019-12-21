@@ -166,7 +166,7 @@ export default {
             }).then(()=>{
                 that.$http.post('/getUserInfos/').then(res1 => {
                     if (res1.data.msg === 'success') {
-                        window.console.log(res1.data)
+                        // window.console.log(res1.data)
                         localStorage.setItem('user_info',JSON.stringify(res1.data))
                     }
                 })

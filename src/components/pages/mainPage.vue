@@ -2,7 +2,7 @@
     <div id="mainPage">
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
-        <bookDetailPage :bookId="id" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
+        <bookDetailPage :bookId="oid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
     </div>
 </template>
 
@@ -21,12 +21,12 @@ export default {
     data() {
         return {
             showDialog: false,
-            id:'',
+            oid: 0,
             bookDetail:{
                 bookname: "",
                 writer: "",
                 press: "",
-                state:"",
+                state:0,
                 description: "",
                 photourls: "",
                 ispicked: false,
@@ -40,12 +40,24 @@ export default {
     created:function() {
         this.Global.bottleNum = parseInt(localStorage.getItem('bottleNum'))
     },
+    mounted (){
+        this.inition()
+        this.getCollected()
+        const that = this
+        this.$http.post('/getAllOrders/').then(res =>{
+            if (res.data.msg === 'success') {
+                localStorage.setItem('orderList',JSON.stringify(res.data.orders))
+            }else{
+                that.$message.error(res.data.msg)
+            }
+        })
+    },
     methods: {
         // 显示图书内容
         showDetail: function () {
             const that = this
             let id = (Math.ceil(Math.random()*that.Global.bottleNum))
-            window.console.log(id)
+            // window.console.log(id)
             this.id = id
             this.$http.post('/visBottle/',{ 'idx': id}).then(res=>{
                 if (res.data.msg === 'success') {
@@ -298,10 +310,6 @@ export default {
                 }
             })
         }
-    },
-    mounted() {
-        this.inition()
-        this.getCollected()
     },
 }
 </script>

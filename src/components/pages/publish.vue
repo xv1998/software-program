@@ -68,7 +68,7 @@
         <el-dialog title="订单信息" :visible.sync="dialogFormVisible">
             <el-form :model="deliveryForm">
                 <el-form-item label="订单号" :label-width="formLabelWidth">
-                    <el-input v-model="deliveryForm.id" autocomplete="off"></el-input>
+                    <el-input v-model="deliveryForm.oid" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="快递公司" :label-width="formLabelWidth">
                     <el-select v-model="deliveryForm.business" placeholder="请选择快递公司">
@@ -102,7 +102,7 @@ export default {
             },
             dialogFormVisible: false,
             deliveryForm: {
-                id: '',
+                oid: '',
                 business: '',
             },
             formLabelWidth: '120px',
@@ -234,7 +234,7 @@ export default {
             }
         },
         confirmDelivery: function () {
-            if (this.deliveryForm.business && this.deliveryForm.id) {
+            if (this.deliveryForm.business && this.deliveryForm.oid) {
                 this.dialogFormVisible = false
             }else {
                 this.$message.error('请选一个')
