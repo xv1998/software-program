@@ -2,7 +2,7 @@
     <div id="mainPage">
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
-        <bookDetailPage :bookId="oid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
+        <bookDetailPage :key="timer" ref="bookDetail" :bookId="bookDetail.botid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
     </div>
 </template>
 
@@ -22,7 +22,9 @@ export default {
         return {
             showDialog: false,
             oid: 0,
+            timer: '',
             bookDetail:{
+                botid:0,
                 bookname: "",
                 writer: "",
                 press: "",
@@ -58,15 +60,13 @@ export default {
             const that = this
             let id = (Math.ceil(Math.random()*that.Global.bottleNum))
             // window.console.log(id)
-            this.id = id
             this.$http.post('/visBottle/',{ 'idx': id}).then(res=>{
                 if (res.data.msg === 'success') {
                     const bottles = JSON.parse(localStorage.getItem('user_bottle'))
+                    res.data.collect = false
                     bottles.forEach(item=>{
-                        if (item[0] && item[0] === id && item[1] === 0){
+                        if (item.botid === res.data.botid) {
                             res.data.collect = true
-                        }else{
-                            res.data.collect = false
                         }
                     })
                     that.bookDetail = res.data
@@ -75,6 +75,7 @@ export default {
                     that.$message.error(res.data.msg)
                 }
             })
+            this.timer = new Date().getTime()
             this.showDialog = true
         },
         // 关闭卡片
