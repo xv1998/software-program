@@ -83,7 +83,7 @@
         mounted: function () {
             let that = this
             let data = this.$route.params
-            that.bookInfo = {
+            let bookInfo = {
                 bookname: data.bookName,
                 writer: data.writer,
                 press: data.press,
@@ -92,9 +92,14 @@
             // TODO 如果无数据或者无cookie 检查
             let userinfo = this.getUserInfo()
             userinfo = JSON.parse(userinfo)
+            console.log(userinfo.address)
+            console.log(JSON.parse(userinfo.address))
             this.address = JSON.parse(userinfo.address).address
             this.userinfo=userinfo
+            this.bookInfo=bookInfo
+            console.log(this.address)
             this.getBook(this.bookInfo);
+            console.log(this.form)
         },
         components: {
             addNewAddress
@@ -201,8 +206,8 @@
                 this.updateUserinfo()
             },
             pickBook:function(){
-                console.log(this.botid)
                 let address=this.address[this.selectedAddress]
+                console.log(address)
                 this.$http.post(api.pickBook,{
                     "botid":this.botid,
                     "address":address
@@ -211,6 +216,7 @@
                 })
             },
             addNewAddress: function (data) {
+                console.log(data)
                 let address = data
                 delete address.address
                 if (Number.isInteger(address.index)) {
@@ -222,8 +228,8 @@
                     this.address.push(address)
 
                 }
-                this.showModel = false
-                this.postNewAddress(address)
+                // this.showModel = false
+                // this.postNewAddress(address)
             },
             getUserInfo: function () {
                 let userinfo = localStorage.getItem('user_info')
@@ -237,6 +243,10 @@
                 return hidephone
             },
             showDialog: function () {
+                let form=this.form
+                if(!form){
+                    [form.province,form.city,form.distance]=['','','']
+                }
                 this.showModel = true
             },
             closeDialog: function (data) {
@@ -362,7 +372,15 @@
     }
 
     .bookdescription {
-        font-size: 0.24em;
+        /*overflow : hidden;*/
+        /*text-overflow: ellipsis;*/
+        /*display: -webkit-box;*/
+        /*-webkit-line-clamp: 3;*/
+        /*-webkit-box-orient: vertical;*/
+        /*height: 200px;*/
+
+        /*word-break:break-all;*/
+        font-size:.24em;
     }
 
     .descriptionTitle {
@@ -379,6 +397,7 @@
         font-family: "Microsoft YaHei", sans-serif;
         font-size: .24em;
         margin-left: 0.5em;
+        width:8.5em;
     }
 
     .addressTitle {
