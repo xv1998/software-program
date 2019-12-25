@@ -5,6 +5,8 @@ import mainPage from '../components/pages/mainPage'
 import getBook from '../components/pages/getBook'
 import publish from '../components/pages/publish'
 import manager from  '../components/pages/managerMainPage'
+import sent from  '../components/pages/sent'
+import softwarepart from '../components/pages/softwarepart'
 
 Vue.use(Router)
 
@@ -14,6 +16,16 @@ export default new Router({
             path: '/',
             name: 'login',
             component: login,
+        },
+        {
+            path: '/sent',
+            name: 'sent',
+            component: sent,
+        },
+        {
+            path: '/softwarepart',
+            name: 'softwarepart',
+            component: softwarepart,
         },
         {
             path: '/mainPage',
