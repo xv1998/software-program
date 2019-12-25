@@ -6,6 +6,8 @@ import getBook from '../components/pages/getBook'
 import publish from '../components/pages/publish'
 import manager from  '../components/pages/managerMainPage'
 import getBookRes from'../components/pages/getBookRes'
+import sent from  '../components/pages/sent'
+import softwarepart from '../components/pages/softwarepart'
 
 Vue.use(Router)
 
@@ -15,6 +17,22 @@ export default new Router({
             path: '/',
             name: 'login',
             component: login,
+        },
+        {
+            path: '/sent',
+            name: 'sent',
+            component: sent,
+            mata:{
+                requireAuth:true
+            }
+        },
+        {
+            path: '/softwarepart',
+            name: 'softwarepart',
+            component: softwarepart,
+            mata:{
+                requireAuth:true
+            }
         },
         {
             path: '/mainPage',
@@ -40,12 +58,18 @@ export default new Router({
         {
             path:'/manager',
             name:'manager',
-            component: manager
+            component: manager,
+            mata:{
+                requireAuth:true
+            }
         },
         {
             path:'/getBook/getBookRes',
             name:'getBookRes',
-            component:getBookRes
+            component:getBookRes,
+            mata:{
+                requireAuth:true
+            }
         }
     ]
 })

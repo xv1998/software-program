@@ -46,6 +46,7 @@ Vue.prototype.$http = axios
 Vue.prototype.$qs = qs
 router.beforeEach((to,from,next)=>{
     if(to.meta.requireAuth===true){
+        console.log('进入')
         if(store.state.sessionid){
             next()
         }else{

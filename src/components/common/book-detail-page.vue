@@ -56,7 +56,7 @@ export default {
             type: Boolean,
             default: false
         },
-        bookId: {
+        botid: {
             type: Number,
             required: true
         },
@@ -73,9 +73,6 @@ export default {
         },
         writer: {
             type: String
-        },
-        botid:{
-            type:Number
         }
     },
     data() {

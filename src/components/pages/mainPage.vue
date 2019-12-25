@@ -2,7 +2,7 @@
     <div id="mainPage">
 <!--        <canvas></canvas>-->
         <menubar class="menu"></menubar>
-        <bookDetailPage :key="timer" ref="bookDetail" :bookId="bookDetail.botid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state" :press="bookDetail.press" :writer="bookDetail.writer" :botid="oid"></bookDetailPage>
+        <bookDetailPage :key="timer" ref="bookDetail" :botid="bookDetail.botid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state" :press="bookDetail.press" :writer="bookDetail.writer"></bookDetailPage>
     </div>
 </template>
 

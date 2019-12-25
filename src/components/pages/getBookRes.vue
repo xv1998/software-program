@@ -1,15 +1,23 @@
 <template>
     <div class="container">
-
+        <div class="con"></div>
+        <menuPage class="menu"></menuPage>
     </div>
 </template>
 
 <script>
+    import menuPage from '../../components/common/menu'
+
     export default {
         name: "getBookRes",
-        data(){
+        data() {
+            return {
+                oid: 0
+            }
         },
-        mounted:function(){
+        components: { menuPage },
+        mounted: function () {
+            this.oid = this.$route.params.oid
         }
 
     }

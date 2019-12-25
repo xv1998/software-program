@@ -93,6 +93,7 @@
             }
             this.botid = data.botid
             // TODO 如果无数据或者无cookie 检查
+            this.updateUserinfo()
             let userinfo = this.getUserInfo()
             userinfo = JSON.parse(userinfo)
             this.address = JSON.parse(userinfo.address).address
@@ -135,9 +136,9 @@
                     }
                 }))
             },
-            backTo:function(){
+            backTo: function () {
                 this.$router.push({
-                    name:'mainPage'
+                    name: 'mainPage'
                 })
             },
             onCheckradio: function (item) {
@@ -189,6 +190,7 @@
                 this.postNewAddress(this.address)
             },
             postNewAddress: function (address) {
+                console.log(address)
                 address = {
                     "address": this.address
                 }
@@ -218,31 +220,39 @@
                     "botid": this.botid,
                     "address": address
                 }).then(response => {
-                    console.log(response)
-                    let res = response.data
-                    if (res.msg.indexOf('success') !== -1) {
-                        this.$router.push({
-                            name: 'getBookRes'
-                        })
-                    } else {
-                        if (res.msg.indexOf('not enought credit')) {
-                            this.$message({
-                                message: '您的积分不够哦！要多捐图书哦！',
-                                duration: 6000,
-                                type: 'error'
+                        console.log(response)
+                        let res = response.data
+                        console.log(this.userinfo)
+                        if (res.msg.indexOf('success') !== -1) {
+                            this.$router.push({
+                                name: 'getBookRes',
+                                parmas:{
+                                    oid:res.oid
+                                }
                             })
-                        } else if (res.msg.indexOf('book not exist')) {
-                            this.$message({
-                                message: '该书已被取走了哦！在漂流海再捞一捞吧!',
-                                duration: 6000,
-                                type: 'error'
-                            })
+                        } else {
+                            if (res.msg.indexOf('not enought credit')) {
+                                this.$message({
+                                    message: '您的积分不够哦！要多捐图书哦！',
+                                    duration: 6000,
+                                    type: 'error'
+                                })
+                            } else if (res.msg.indexOf('book not exist')) {
+                                this.$message({
+                                    message: '该书已被取走了哦！在漂流海再捞一捞吧!',
+                                    duration: 6000,
+                                    type: 'error'
+                                })
+                            }
+                            setTimeout(() => {
+                                this.$router.push({
+                                    name: 'mainPage'
+                                })
+                            }, 6000)
                         }
-                        this.$router.push({
-                            name: 'mainPage'
-                        })
+                        this.updateUserinfo()
                     }
-                }).catch(e=>{
+                ).catch(e => {
                     console.log(e)
                 })
             },
@@ -262,25 +272,29 @@
                 }
                 this.showModel = false
                 this.postNewAddress(address)
-            },
+            }
+            ,
             getUserInfo: function () {
                 let userinfo = localStorage.getItem('user_info')
                 return userinfo
-            },
+            }
+            ,
             hidePhone: function (phone) {
                 let replace = '****'
                 let pre = phone.substring(0, 3)
                 let last = phone.substring(7, 11)
                 let hidephone = pre + replace + last;
                 return hidephone
-            },
+            }
+            ,
             showDialog: function () {
                 let form = this.form
                 if (!form) {
                     [form.province, form.city, form.distance] = ['', '', '']
                 }
                 this.showModel = true
-            },
+            }
+            ,
             closeDialog: function (data) {
                 if (Number.isInteger(data)) {
                     this.form = {}
@@ -401,7 +415,7 @@
         position: absolute;
         left: 0.2em;
         top: 0.2em;
-        cursor:pointer;
+        cursor: pointer;
     }
 
     .bookdescription {
