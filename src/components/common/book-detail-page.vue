@@ -8,8 +8,8 @@
             </div>
             <div class="lower">
                 <div class="nav">
-                    <div class="collect-icon"  @click="collected()">
-                        <img src="../../assets/heartFill.png" v-if="isCollect">
+                    <div class="collect-icon" @click="collected()">
+                        <img src="../../assets/heartFill.png" v-if="isCollectShow">
                         <img v-else src="../../assets/heart.png">
                     </div>
                     <img class="cancel" @click="close()" src="../../assets/cancel.png"/>
@@ -32,23 +32,23 @@
 export default {
     name: "bookDetailPage",
     props: {
-        state:{
+        state: {
             type: Number,
             default: 1
         },
-        collect:{
+        collect: {
             type: Boolean,
             default: false
         },
-        ispicked:{
+        ispicked: {
             type: Boolean,
             default: false
         },
-        isDonated:{
+        isDonated: {
             type: Boolean,
             default: false
         },
-        bookImg:{
+        bookImg: {
             type: String,
             default: '../../assets/bookCover.jpg'
         },
@@ -71,22 +71,19 @@ export default {
         press:{
             type:String
         },
-        writer:{
-            type:String
+        writer: {
+            type: String
         },
-        botid:{
-            type:Number
-        }
     },
     data() {
         return {
-            isCollect: false,
+            isCollectShow:this.collect,
             show: this.showDialog
         }
     },
     watch: {
         'collect'(collect){
-            this.isCollect = collect
+            this.isCollectShow = collect
         },
         'showDialog'(showDialog) {
             this.show = showDialog
@@ -97,20 +94,18 @@ export default {
             this.show = false
             this.$emit('close', this.show)
         },
-        collected(){
+        collected() {
             const that = this
-            if (this.isCollect){
+            if (this.isCollectShow) {
                 this.$message.error('您已收藏')
-            }else{
-                this.$http.post('/addStar/',{
-                    'bid':that.bookId
-                }).then(res =>{
+            } else {
+                this.$http.post('/addStar/', {
+                    'bid': that.bookId
+                }).then(res => {
                     if (res.data.msg === 'success') {
-                        that.isCollect = true
-                        that.getCollected().catch(e =>{
-                            that.$message.error(e)
-                        })
-                    }else{
+                        that.isCollectShow = true
+                        that.getCollected()
+                    } else {
                         that.$message.error(res.data.msg)
                     }
                 })
@@ -119,24 +114,26 @@ export default {
         // 获取用户收藏记录
         getCollected: function () {
             const that = this
-            this.$http.post('/getStarInfos/').then(res=>{
+            this.$http.post('/getStarInfos/').then(res => {
                 if (res.data.msg === 'success') {
                     window.console.log(res.data)
                     localStorage.setItem('user_bottle', JSON.stringify(res.data.bottles))
-                }else{
+                } else {
                     that.$message.error(res.data.msg)
                 }
+            }).catch(e => {
+                that.$message.error(e)
             })
         },
-        getBook:function(){
+        getBook: function () {
             let that = this
             this.$router.push({
-                name:'getBook',
-                params:{
-                    bookName:that.bookName,
-                    writer:that.writer,
-                    press:that.press,
-                    botid:that.bookId
+                name: 'getBook',
+                params: {
+                    bookName: that.bookName,
+                    writer: that.writer,
+                    press: that.press,
+                    botid: that.botid
                 }
 
             })
@@ -147,11 +144,12 @@ export default {
 
 
 <style scoped>
-.container{
+.container {
     position: absolute;
     width: 100%;
     height: 100%;
 }
+
 .fullbg {
     background-color: #6d6d66;
     left: 0;
@@ -163,16 +161,19 @@ export default {
     z-index: 1;
     filter: alpha(opacity=50);
 }
-.cards{
+
+.cards {
     -webkit-transform: translateY(0);
     -moz-transform: translateY(0);
     -ms-transform: translateY(0);
     -o-transform: translateY(0);
     transform: translateY(0);
 }
-.cards{
-    animation:mymove 5s infinite;
+
+.cards {
+    animation: mymove 5s infinite;
 }
+
 @keyframes mymove {
     0% {
         transform: translateY(5px);
@@ -184,6 +185,7 @@ export default {
         transform: translateY(5px);
     }
 }
+
 .cards {
     position: fixed;
     width: 650px;
@@ -259,6 +261,7 @@ export default {
     -moz-transform: rotateY(-180deg);
     -webkit-transform: rotateY(-180deg);
 }
+
 .lower::before,
 .lower::after {
     content: "";
@@ -270,18 +273,21 @@ export default {
     opacity: .3;
     transition: .3s;
 }
+
 .lower::before {
     top: 1.2em;
     right: 1.2em;
     border-bottom-width: 0;
     border-left-width: 0;
 }
+
 .lower::after {
     bottom: 1.2em;
     left: 1.2em;
     border-top-width: 0;
     border-right-width: 0;
 }
+
 .cards:hover .lower::before,
 .cards:hover .lower::after {
     width: calc(100% - 2.5em);
@@ -296,14 +302,17 @@ export default {
     border-bottom: 1px solid rgba(255, 255, 255, 0.72);
     font-size: 12px;
 }
-.nav .collect-icon{
+
+.nav .collect-icon {
     position: absolute;
     float: left;
 }
-.collect-icon img{
+
+.collect-icon img {
     width: 20px;
     height: 20px;
 }
+
 .nav .cancel {
     z-index: 10;
     height: 20px;
@@ -317,33 +326,36 @@ export default {
 .description {
     z-index: 10;
     margin: 0 20px;
-    position: relative!important;
+    position: relative !important;
     height: 350px;
     display: flex;
     flex-direction: column;
 }
-.description section{
+
+.description section {
     margin-top: 10px;
     overflow-y: auto;
     overflow-x: hidden;
     height: 280px;
-    text-shadow:none;
+    text-shadow: none;
     font-family: cursive;
     font-size: 14px;
     line-height: 20px;
     color: #b4b4b4;
 }
-.description section::-webkit-scrollbar
-{
+
+.description section::-webkit-scrollbar {
     border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: rgba(0,0,0,0);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: rgba(0, 0, 0, 0);
 }
+
 .description section::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background-color: black;
 }
+
 .description .button {
     outline: 0;
     text-align: center;
