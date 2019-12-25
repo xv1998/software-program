@@ -74,6 +74,9 @@ export default {
         writer: {
             type: String
         },
+        botid:{
+            type:Number
+        }
     },
     data() {
         return {
@@ -127,6 +130,7 @@ export default {
         },
         getBook: function () {
             let that = this
+            console.log(that.botid)
             this.$router.push({
                 name: 'getBook',
                 params: {

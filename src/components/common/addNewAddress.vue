@@ -132,27 +132,12 @@
                 }
                 this.form.address = address
                 this.address = address
-                console.log(this.form)
-                console.log(this.address)
             },
             submit: function (form) {
+                console.log(form)
                 this.$refs.form.validate((vaild => {
-                        console.log(this)
-                        let form = this.form
-                        let address=this.address
-                        console.log(form)
-                        console.log(this.address)
                         if (vaild) {
-                            // let address = this.address
-                            // let form = this.form
-                            // address.name = form.name
-                            // address.phonenumber = form.phonenumber
-                            // address.specific = form.specific
-                            // address.index=form.index
-                            // TODO 添加弹框
-                            this.form.address=address
-                            console.log(this)
-                            this.$emit('address', this.form)
+                            this.$emit('address', form)
                         } else {
                             // TODO 添加失败弹框
                         }

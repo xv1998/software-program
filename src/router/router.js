@@ -5,6 +5,7 @@ import mainPage from '../components/pages/mainPage'
 import getBook from '../components/pages/getBook'
 import publish from '../components/pages/publish'
 import manager from  '../components/pages/managerMainPage'
+import getBookRes from'../components/pages/getBookRes'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
             path:'/manager',
             name:'manager',
             component: manager
+        },
+        {
+            path:'/getBook/getBookRes',
+            name:'getBookRes',
+            component:getBookRes
         }
     ]
 })
