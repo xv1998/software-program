@@ -6,7 +6,7 @@
                      <div><span>书名：</span><span>《{{item.bookname}}》</span></div>
                     <div><span>作者：</span><span>{{item.writer}}</span></div>
                     <div><span>出版社：</span><span>{{item.press}}</span></div>
-                    <div><span>书评：</span><span>{{item.message}}</span></div>
+                    <div><span>书评：</span><span>{{item.description}}</span></div>
                     <div><span>发布时间：</span><span>{{item.uploaddatetime}}</span></div>
                     <div><span>图书状态：</span><span>{{item.state}}</span></div>
                     <div><span>捐赠对象：</span><span>{{item.donateTo}}</span></div>
