@@ -1,7 +1,7 @@
 <template>
     <section class="getBook_Container" v-cloak>
         <meta name="referrer" content="no-referrer"/>
-        <div class="back"><img src="../../assets/back.png"></div>
+        <div class="back" @click="backTo"><img src="../../assets/back.png"></div>
         <div class="bookContainer">
 
             <div class="bookname">{{bookInfo.bookname}}</div>
@@ -38,19 +38,22 @@
                         <el-tag type="info" v-show="item.isDefault">默认地址</el-tag>
                         <div class="edit hoverShow" @click="editAddress(index)">编辑</div>
                         <div class="delete hoverShow" @click="deleteAddress(index)">删除</div>
-                        <div class="setDefault hoverShow" v-show="!item.isDefault" @click="setDefault(index)">设为默认地址</div>
+                        <div class="setDefault hoverShow" v-show="!item.isDefault" @click="setDefault(index)">设为默认地址
+                        </div>
                     </div>
                 </div>
             </div>
             <el-button type="primary" @click="showDialog">添加新地址</el-button>
-            <addNewAddress :showModel="showModel" :form="form" v-on:address="addNewAddress" @close="closeDialog"></addNewAddress>
+            <addNewAddress :showModel="showModel" :form="form" v-on:address="addNewAddress"
+                           @close="closeDialog"></addNewAddress>
         </div>
         <div class="credit">
             <div class="needed_credit">
                 该书需要:{{bookInfo.neededcredit}}
             </div>
             <div class="user_credit">
-                你的积分:{{userinfo.credit}}</div>
+                你的积分:{{userinfo.credit}}
+            </div>
             <div class="rest">
                 剩余积分:{{countCredit}}
             </div>
@@ -77,31 +80,33 @@
                 radio: 0,
                 showModel: false,
                 address: [],
-                selectedAddress:0
+                selectedAddress: 0
             }
         },
         mounted: function () {
             let that = this
             let data = this.$route.params
-            that.bookInfo = {
+            let bookInfo = {
                 bookname: data.bookName,
                 writer: data.writer,
                 press: data.press,
             }
-            this.botid=data.botid
+            this.botid = data.botid
             // TODO 如果无数据或者无cookie 检查
+            this.updateUserinfo()
             let userinfo = this.getUserInfo()
             userinfo = JSON.parse(userinfo)
             this.address = JSON.parse(userinfo.address).address
-            this.userinfo=userinfo
+            this.userinfo = userinfo
+            this.bookInfo = bookInfo
             this.getBook(this.bookInfo);
         },
         components: {
             addNewAddress
         },
-        computed:{
-            countCredit:function(){
-                return this.userinfo.credit-this.bookInfo.neededcredit
+        computed: {
+            countCredit: function () {
+                return this.userinfo.credit - this.bookInfo.neededcredit
             }
         },
         methods: {
@@ -131,8 +136,13 @@
                     }
                 }))
             },
+            backTo: function () {
+                this.$router.push({
+                    name: 'mainPage'
+                })
+            },
             onCheckradio: function (item) {
-                this.selectedAddress=item
+                this.selectedAddress = item
             },
             updateUserinfo: function () {
                 this.$http.post(api.getUserinfo).then(response => {
@@ -176,10 +186,11 @@
                 });
             },
             setDefault: function (index) {
-                this.address[index].isDefault=true
+                this.address[index].isDefault = true
                 this.postNewAddress(this.address)
             },
             postNewAddress: function (address) {
+                console.log(address)
                 address = {
                     "address": this.address
                 }
@@ -187,36 +198,73 @@
                 this.$http.post(api.update, {
                     "new_address": addressString
                 }).then(response => {
-                    if(response.data.msg==='success'){
-                    this.$message({
-                        message: '添加地址成功',
-                        type: 'success'
-                    })}
-                    else if (response.data.msg==='fail'){
+                    if (response.data.msg === 'success') {
+                        if (!Number.isInteger(address.index)) {
+                            this.$message({
+                                message: '添加地址成功',
+                                type: 'success'
+                            })
+                        }
+                    }
+                    else if (response.data.msg === 'fail') {
                         this.$message.error('添加地址失败')
                     }
-                }).catch(e=>{
+                }).catch(e => {
 
                 })
                 this.updateUserinfo()
             },
-            pickBook:function(){
-                console.log(this.botid)
-                let address=this.address[this.selectedAddress]
-                this.$http.post(api.pickBook,{
-                    "botid":this.botid,
-                    "address":address
-                }).then(response=>{
-                    console.log(response)
+            pickBook: function () {
+                let address = this.address[this.selectedAddress]
+                this.$http.post(api.pickBook, {
+                    "botid": this.botid,
+                    "address": address
+                }).then(response => {
+                        console.log(response)
+                        let res = response.data
+                        console.log(this.userinfo)
+                        if (res.msg.indexOf('success') !== -1) {
+                            this.$router.push({
+                                name: 'getBookRes',
+                                parmas:{
+                                    oid:res.oid
+                                }
+                            })
+                        } else {
+                            if (res.msg.indexOf('not enought credit')) {
+                                this.$message({
+                                    message: '您的积分不够哦！要多捐图书哦！',
+                                    duration: 6000,
+                                    type: 'error'
+                                })
+                            } else if (res.msg.indexOf('book not exist')) {
+                                this.$message({
+                                    message: '该书已被取走了哦！在漂流海再捞一捞吧!',
+                                    duration: 6000,
+                                    type: 'error'
+                                })
+                            }
+                            setTimeout(() => {
+                                this.$router.push({
+                                    name: 'mainPage'
+                                })
+                            }, 6000)
+                        }
+                        this.updateUserinfo()
+                    }
+                ).catch(e => {
+                    console.log(e)
                 })
             },
             addNewAddress: function (data) {
                 let address = data
-                delete address.address
+                let Address = address.address
+                address.city = Address.city
+                address.province = Address.province
+                address.district = Address.district
                 if (Number.isInteger(address.index)) {
                     this.address[address.index] = address
-                    this.form={}
-                    delete address.index
+                    this.form = {}
                 }
                 else {
                     this.address.push(address)
@@ -224,24 +272,32 @@
                 }
                 this.showModel = false
                 this.postNewAddress(address)
-            },
+            }
+            ,
             getUserInfo: function () {
                 let userinfo = localStorage.getItem('user_info')
                 return userinfo
-            },
+            }
+            ,
             hidePhone: function (phone) {
                 let replace = '****'
                 let pre = phone.substring(0, 3)
                 let last = phone.substring(7, 11)
                 let hidephone = pre + replace + last;
                 return hidephone
-            },
+            }
+            ,
             showDialog: function () {
+                let form = this.form
+                if (!form) {
+                    [form.province, form.city, form.distance] = ['', '', '']
+                }
                 this.showModel = true
-            },
+            }
+            ,
             closeDialog: function (data) {
-                if(Number.isInteger(data)){
-                    this.form={}
+                if (Number.isInteger(data)) {
+                    this.form = {}
                 }
                 this.showModel = false
             }
@@ -359,10 +415,19 @@
         position: absolute;
         left: 0.2em;
         top: 0.2em;
+        cursor: pointer;
     }
 
     .bookdescription {
-        font-size: 0.24em;
+        /*overflow : hidden;*/
+        /*text-overflow: ellipsis;*/
+        /*display: -webkit-box;*/
+        /*-webkit-line-clamp: 3;*/
+        /*-webkit-box-orient: vertical;*/
+        /*height: 200px;*/
+
+        /*word-break:break-all;*/
+        font-size: .24em;
     }
 
     .descriptionTitle {
@@ -379,6 +444,7 @@
         font-family: "Microsoft YaHei", sans-serif;
         font-size: .24em;
         margin-left: 0.5em;
+        width: 8.5em;
     }
 
     .addressTitle {
@@ -417,9 +483,10 @@
     .radioClass:hover .setDefault {
         display: block;
     }
-    .credit{
-        margin-top:.8em;
-        font-size:.24em;
+
+    .credit {
+        margin-top: .8em;
+        font-size: .24em;
     }
 
     [v-cloak] {

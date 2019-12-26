@@ -7,7 +7,8 @@
                 <div class="form">
                     <el-form :model="form" ref="form" :rules="rules">
                         <el-form-item label="所在地区" prop="address">
-                            <VDistpicker :province="form.province" :city="form.city" :area="form.district" @selected="onSelected" v-model="form.address"></VDistpicker>
+                            <VDistpicker :province="form.province" :city="form.city" :area="form.district"
+                                         @selected="onSelected" v-model="form.address"></VDistpicker>
                         </el-form-item>
                         <el-form-item label="收件人" prop="name">
                             <el-input style="margin-left:14px;width:200px;" v-model="form.name"></el-input>
@@ -22,7 +23,7 @@
                             <el-input v-model="form.tel"></el-input>
                         </el-form-item>
                         <el-form-item label="邮箱地址" style="margin-left:10px;" prop="email">
-                            <el-input v-model="form.email" ></el-input>
+                            <el-input v-model="form.email"></el-input>
                             <div class="email-tips">用来接收订单提醒邮件，便于您及时了解订单状态</div>
                         </el-form-item>
                         <el-form-item>
@@ -45,28 +46,27 @@
                 Type: Boolean,
                 default: false
             },
-            form:{
-                Type:Object,
+            form: {
+                Type: Object,
             }
         },
         data() {
             let checkPhone = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('手机号码不能为空'))
-                }else{
-                    if(value.length!==11){
+                } else {
+                    if (value.length !== 11) {
                         return callback(new Error('请输入正确格式'))
                     }
-                    else{
-                        let reg=new RegExp("^[1]+[0-9]{10}$")
+                    else {
+                        let reg = new RegExp("^[1]+[0-9]{10}$")
                         if (!reg.test(value)) {
                             return callback(new Error('请输入数字值'))
-                        }else{
+                        } else {
                             callback();
                         }
                     }
                 }
-
             }
             let checkTel = (rule, value, callback) => {
                 setTimeout(() => {
@@ -74,37 +74,45 @@
                     console.log(!Number.isInteger(value))
                     if (!Number.isInteger(value)) {
                         callback(new Error('请输入数字值'))
-                    }else{
+                    } else {
                         callback();
                     }
                 }, 1000)
             }
             let checkEmail = (rule, value, callback) => {
-                    if (value) {
-                        let reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
-                        if (!reg.test(value)) {
+                if (value) {
+                    let reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+                    if (!reg.test(value)) {
                         return callback(new Error('请输入正确的邮箱格式'))
-                        }
-                    }else{
-                        callback()
                     }
+                } else {
+                    callback()
+                }
 
+            }
+            let checkAddress = (rule, value, callback) => {
+                console.log(value)
+                if(value.province&&value.city&&value.district){
+                    callback()
+                }else{
+                    return callback(new Error('请选择地区'))
+                }
             }
             return {
                 rules: {
+                    address: [
+                        { required: true, message: '请选择地区', trigger: 'blur', validator: checkAddress }],
                     name: [
                         { required: true, message: '请输入收件人', trigger: 'blur' }],
                     phonenumber: [
                         { required: true, trigger: 'blur', validator: checkPhone }],
-                    address: [
-                        { required: true, message:'请选择地区',trigger: 'blur'}],
                     specific: [
-                        { required:true, message: '请输入详细地址', trigger: 'blur' }],
-                    Tel:[{
-                        validator:checkTel
+                        { required: true, message: '请输入详细地址', trigger: 'blur' }],
+                    Tel: [{
+                        validator: checkTel
                     }],
                     email: [
-                        { validator:checkEmail }
+                        { validator: checkEmail }
                     ]
                 }
             }
@@ -122,30 +130,19 @@
                     'city': data.city.value,
                     'district': data.area.value,
                 }
-                this.form.address=address
+                this.form.address = address
                 this.address = address
             },
             submit: function (form) {
-                this.$refs.form.validate((vaild =>{
-                    let form = this.form
-                        console.log(form)
+                console.log(form)
+                this.$refs.form.validate((vaild => {
                         if (vaild) {
-                            // let address = this.address
-                            // let form = this.form
-                            // address.name = form.name
-                            // address.phonenumber = form.phonenumber
-                            // address.specific = form.specific
-                            // address.index=form.index
-                            // TODO 添加弹框
                             this.$emit('address', form)
-
                         } else {
                             // TODO 添加失败弹框
-
                         }
                     }
                 ))
-
             }
         }
     }
@@ -198,14 +195,14 @@
         display: flex;
         padding: .1em;
     }
-    .email-tips{
-        font-size:.8em;
-        color:#778899;
+
+    .email-tips {
+        font-size: .8em;
+        color: #778899;
     }
 
     .el-input {
         width: 400px;
-
     }
 
     .choice {
@@ -218,22 +215,18 @@
     }
 
     .el-form-item__label {
-
     }
 
     @media screen and (min-width: 1921px) {
-
         .NewAddress-Container {
             font-size: 108px;
         }
     }
 
     @media screen and (max-width: 1920px) and (min-width: 1521px) {
-
         .NewAddress-Container {
             font-size: 100px;
         }
-
     }
 
     @media screen and (max-width: 1520px) and (min-width: 1281px) {
