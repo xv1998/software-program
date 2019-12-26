@@ -1,7 +1,7 @@
 <template>
     <div id="mainPage">
 <!--        <canvas></canvas>-->
-        <menubar class="menu"></menubar>
+        <menubar :manager="ismanager" class="menu"></menubar>
         <bookDetailPage :key="timer" ref="bookDetail" :bookId="bookDetail.botid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state"></bookDetailPage>
     </div>
 </template>
@@ -20,6 +20,7 @@ export default {
     },
     data() {
         return {
+            ismanager:"",
             showDialog: false,
             oid: 0,
             timer: '',
@@ -41,6 +42,7 @@ export default {
     },
     created:function() {
         this.Global.bottleNum = parseInt(localStorage.getItem('bottleNum'))
+        // window.console.log(this.manager)
     },
     mounted (){
         this.inition()
@@ -53,6 +55,7 @@ export default {
                 that.$message.error(res.data.msg)
             }
         })
+        this.ismanager = JSON.parse(localStorage.getItem('user_info')).issuper
     },
     methods: {
         // 显示图书内容
@@ -64,11 +67,13 @@ export default {
                 if (res.data.msg === 'success') {
                     const bottles = JSON.parse(localStorage.getItem('user_bottle'))
                     res.data.collect = false
-                    bottles.forEach(item=>{
-                        if (item.botid === res.data.botid) {
-                            res.data.collect = true
-                        }
-                    })
+                    if (bottles.length !== 0) {
+                        bottles.forEach(item=>{
+                            if (item.botid === res.data.botid) {
+                                res.data.collect = true
+                            }
+                        })
+                    }
                     that.bookDetail = res.data
                     window.console.log(that.bookDetail)
                 }else{

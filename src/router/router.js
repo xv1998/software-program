@@ -7,6 +7,7 @@ import publish from '../components/pages/publish'
 import manager from  '../components/pages/managerMainPage'
 import sent from  '../components/pages/sent'
 import softwarepart from '../components/pages/softwarepart'
+import changePassword from '../components/pages/changePassword'
 
 Vue.use(Router)
 
@@ -21,6 +22,11 @@ export default new Router({
             path: '/sent',
             name: 'sent',
             component: sent,
+        },
+        {
+            path: '/changePassword',
+            name: 'changePassword',
+            component: changePassword,
         },
         {
             path: '/softwarepart',
