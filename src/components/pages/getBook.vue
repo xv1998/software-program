@@ -130,6 +130,7 @@
                             "press": res.press
                         }
                         that.bookInfo = bookInfo
+                        console.log(bookInfo)
                     }
                     else {
                         console.log(res)
@@ -223,21 +224,23 @@
                         console.log(response)
                         let res = response.data
                         console.log(this.userinfo)
+                    console.log(res.oid)
                         if (res.msg.indexOf('success') !== -1) {
                             this.$router.push({
                                 name: 'getBookRes',
-                                parmas:{
-                                    oid:res.oid
+                                params:{
+                                    oid:res.oid,
+                                    bookinfo:this.bookInfo
                                 }
                             })
                         } else {
-                            if (res.msg.indexOf('not enought credit')) {
+                            if (res.msg.indexOf('not enought credit')!==-1) {
                                 this.$message({
                                     message: '您的积分不够哦！要多捐图书哦！',
                                     duration: 6000,
                                     type: 'error'
                                 })
-                            } else if (res.msg.indexOf('book not exist')) {
+                            } else if (res.msg.indexOf('book not exist')!==-1) {
                                 this.$message({
                                     message: '该书已被取走了哦！在漂流海再捞一捞吧!',
                                     duration: 6000,
