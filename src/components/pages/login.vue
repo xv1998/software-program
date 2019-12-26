@@ -149,7 +149,6 @@ export default {
                         that.$store.commit("saveSession", res.data)
                         that.Global.bottleNum = res.data.bottlenum
                         localStorage.setItem('bottleNum', res.data.bottlenum)
-                        that.$router.push({ name: 'mainPage' })
                         break
                     }
                     case 'wrong password': {
@@ -161,15 +160,19 @@ export default {
                         break
                     }
                 }
+                return Promise.resolve(res.data.msg)
             }).catch(e => {
                 window.console.log(e)
-            }).then(()=>{
-                that.$http.post('/getUserInfos/').then(res1 => {
-                    if (res1.data.msg === 'success') {
-                        // window.console.log(res1.data)
-                        localStorage.setItem('user_info',JSON.stringify(res1.data))
-                    }
-                })
+            }).then((res)=>{
+                if (res === 'success') {
+                    that.$http.post('/getUserInfos/').then(res1 => {
+                        if (res1.data.msg === 'success') {
+                            // window.console.log(res1.data)
+                            localStorage.setItem('user_info',JSON.stringify(res1.data))
+                            that.$router.push({ name: 'mainPage' })
+                        }
+                    })
+                }
             }).catch(e => {
                 window.console.log(e)
             })

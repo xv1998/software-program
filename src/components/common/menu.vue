@@ -9,8 +9,9 @@
 
         <router-link to="/mainPage" class="menu-item blue">主页</router-link>
         <router-link to="/softwarepart" class="menu-item green"> 收藏</router-link>
-        <router-link to="/manager" class="menu-item red"> 管理员</router-link>
-        <router-link to="/" class="menu-item purple"> 退出</router-link>
+        <router-link v-if="ismanager" to="/manager" class="menu-item red"> 管理员</router-link>
+        <router-link v-else to="/changePassword" class="menu-item red"> 修改</router-link>
+        <router-link v-on:click.native="logout" to="/" class="menu-item purple" > 退出</router-link>
         <router-link to="/sent" class="menu-item orange"> 历史</router-link>
         <router-link to="/publish" class="menu-item lightblue"> 发布</router-link>
     </nav>
@@ -18,7 +19,34 @@
 
 <script>
 export default {
-    name: "menuPage"
+    name: "menuPage",
+    props:{
+        manager: {
+            type: Boolean
+        }
+    },
+    computed:{
+        ismanager: function () {
+            if (this.manager){
+                return  this.manager
+            }
+            let info = JSON.parse(localStorage.getItem('user_info'))
+            return !!(info && info.issuper);
+        }
+    },
+    methods:{
+        logout:function () {
+            localStorage.clear()
+        }
+    }
+    // mounted(){
+    //     let info = JSON.parse(localStorage.getItem('user_info'))
+    //     if (info && info.issuper) {
+    //         this.manager = true
+    //     }else{
+    //         this.manager = false
+    //     }
+    // }
 }
 </script>
 

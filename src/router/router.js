@@ -8,7 +8,7 @@ import manager from  '../components/pages/managerMainPage'
 import getBookRes from'../components/pages/getBookRes'
 import sent from  '../components/pages/sent'
 import softwarepart from '../components/pages/softwarepart'
-import orderhistory from '../components/pages/Order-History'
+import changePassword from '../components/pages/changePassword'
 
 Vue.use(Router)
 
@@ -26,6 +26,11 @@ export default new Router({
             mata:{
                 requireAuth:true
             }
+        },
+        {
+            path: '/changePassword',
+            name: 'changePassword',
+            component: changePassword,
         },
         {
             path: '/softwarepart',
@@ -71,14 +76,7 @@ export default new Router({
             mata:{
                 requireAuth:true
             }
-        },{
-            path:'/Order-History',
-            name:'Order-History',
-            component:orderhistory,
-            meta:{
-                requireAuth:true
-            }
-
         }
+
     ]
 })

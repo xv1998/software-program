@@ -4,6 +4,7 @@ const api = {
     getBook:'/getBookInfos/',
     update:'/updateAddress/',
     getUserinfo:'/getUserInfos/',
-    pickBook:'/pickBook/'
+    pickBook:'/pickBook/',
+    getOrder:'/getOrdersOfUser/'
 }
 export { api }

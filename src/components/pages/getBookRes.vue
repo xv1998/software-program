@@ -3,7 +3,7 @@
         <div class="top">
             <el-steps :space="600" :active="1" finish-status="success" align-center>
                 <el-step title="已下单"></el-step>
-                <el-step title="已发货"></el-step>
+                <el-step title="发货中"></el-step>
                 <el-step title="订单完成"></el-step>
             </el-steps>
         </div>
@@ -42,7 +42,10 @@
         methods:{
             move:function(){
                 this.$router.push({
-                    name:'Order-History'
+                    name:'softwarepart',
+                    params:{
+                        activeNames:'second'
+                    }
                 })
             }
         }

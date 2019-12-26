@@ -100,7 +100,7 @@ export default {
                 this.$message.error('您已收藏')
             } else {
                 this.$http.post('/addStar/', {
-                    'bid': that.bookId
+                    'bid': that.botid
                 }).then(res => {
                     if (res.data.msg === 'success') {
                         that.isCollectShow = true

@@ -6,7 +6,7 @@
                      <div><span>书名：</span><span>《{{item.bookname}}》</span></div>
                     <div><span>作者：</span><span>{{item.writer}}</span></div>
                     <div><span>出版社：</span><span>{{item.press}}</span></div>
-                    <div><span>书评：</span><span>{{item.message}}</span></div>
+                    <div><span>书评：</span><span>{{item.description}}</span></div>
                     <div><span>发布时间：</span><span>{{item.uploaddatetime}}</span></div>
                     <div><span>图书状态：</span><span>{{item.state}}</span></div>
                     <div><span>捐赠对象：</span><span>{{item.donateTo}}</span></div>
@@ -16,7 +16,7 @@
                 </div>
             </li>
         </ul>
-        <menubar></menubar>   
+        <menubar></menubar>
 <bookDetailPage :bookId = "bookDetail.bookId" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description"  :bookName="bookDetail.bookname" v-on:close="closeDialog"></bookDetailPage>
 </div>
 </template>
@@ -102,7 +102,7 @@ export default{
             /* border: 1px solid aqua; */
             margin: 0 auto;
         }
-        
+
         #container ul {
             list-style: none;
             padding: 0;
@@ -110,7 +110,7 @@ export default{
             width:80%;
             position:absolute;
         }
-        
+
         .displayLi {
             width: 100%;
             height: 20%;
@@ -118,7 +118,7 @@ export default{
             border: 1px solid aqua;
             display: flex;
         }
-        
+
         .left {
             width: 77%;
             height: 98%;
@@ -127,11 +127,11 @@ export default{
             margin-top: 1%;
             margin-bottom: 1%;
         }
-        
+
         .left div:nth-child(2) {
             overflow: hidden;
         }
-        
+
         .right {
             width: 19%;
             margin-top: 1%;
@@ -139,14 +139,14 @@ export default{
             margin-bottom: 1%;
             display: flex;
         }
-        
+
         .right img {
             width: 100%;
             height: 100%;
             max-height: 120px;
             margin: auto;
         }
-        
+
         span {
             font-size: 1em;
             font-weight: 800;
