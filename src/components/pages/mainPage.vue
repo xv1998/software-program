@@ -1,7 +1,7 @@
 <template>
     <div id="mainPage">
 <!--        <canvas></canvas>-->
-        <menubar class="menu"></menubar>
+        <menubar :manager="ismanager" class="menu"></menubar>
         <bookDetailPage :key="timer" ref="bookDetail" :botid="bookDetail.botid" :collect="bookDetail.collect" :isDonated="bookDetail.isdonated" :ispicked="bookDetail.ispicked" :bookImg="bookDetail.photourls" :showDialog="showDialog" :bookIntro="bookDetail.description" :bookName="bookDetail.bookname" v-on:close="closeDialog" :state="bookDetail.state" :press="bookDetail.press" :writer="bookDetail.writer"></bookDetailPage>
     </div>
 </template>
@@ -41,6 +41,7 @@ export default {
         }
     },
     created:function() {
+        this.ismanager = JSON.parse(localStorage.getItem('user_info')).issuper
         this.Global.bottleNum = parseInt(localStorage.getItem('bottleNum'))
         // window.console.log(this.manager)
     },

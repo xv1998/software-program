@@ -6,12 +6,14 @@
                 <div class="user_options-text">
                     <div class="user_options-unregistered">
                         <h2 class="user_unregistered-title">Want to change phone?</h2>
-                        <button v-on:click="change" class="user_unregistered-signup" id="signup-button">change phone</button>
+                        <button v-on:click="change" class="user_unregistered-signup" id="signup-button">change phone
+                        </button>
                     </div>
 
                     <div class="user_options-registered">
                         <h2 class="user_registered-title">Want to change password?</h2>
-                        <button v-on:click="change" class="user_registered-login" id="login-button">change password</button>
+                        <button v-on:click="change" class="user_registered-login" id="login-button">change password
+                        </button>
                     </div>
                 </div>
 
@@ -22,8 +24,8 @@
                         <form class="forms_form">
                             <fieldset class="forms_fieldset">
                                 <div class="forms_field">
-                                    <input type="text" v-model="passMess.account" placeholder="account"
-                                           class="forms_field-input" required autofocus/>
+                                    <input type="password" v-model="passMess.password" placeholder="old Password"
+                                           class="forms_field-input" required/>
                                 </div>
                                 <div class="forms_field">
                                     <input type="tel" v-model="passMess.phone" placeholder="Phone"
@@ -31,10 +33,6 @@
                                            required/>
                                     <el-button size="small" round v-on:click="getCode()" class="code-button">发送验证码
                                     </el-button>
-                                </div>
-                                <div class="forms_field">
-                                    <input type="password" v-model="passMess.password" placeholder="old Password"
-                                           class="forms_field-input" required/>
                                 </div>
                                 <div class="forms_field">
                                     <input type="password" v-model="passMess.oPassword" placeholder="new Password"
@@ -56,7 +54,7 @@
                         <form class="forms_form">
                             <fieldset class="forms_fieldset">
                                 <div class="forms_field">
-                                    <input type="text" v-model="passMess.account" placeholder="Full Name"
+                                    <input type="password" v-model="passMess.password" placeholder="Password"
                                            class="forms_field-input" required/>
                                 </div>
                                 <div class="forms_field">
@@ -65,10 +63,6 @@
                                            required/>
                                     <el-button size="small" round v-on:click="getCode()" class="code-button">发送验证码
                                     </el-button>
-                                </div>
-                                <div class="forms_field">
-                                    <input type="password" v-model="passMess.password" placeholder="Password"
-                                           class="forms_field-input" required/>
                                 </div>
                                 <div class="forms_field">
                                     <input type="text" v-model="passMess.code" placeholder="Verification code"
@@ -114,33 +108,31 @@ export default {
         },
         getCode: function () {
             const that = this
-            if (that.passMess.account) {
-                this.$http.get('/sendSms2BindedPhone/', {
-                    params: {
-                        'uid': that.passMess.account
-                    }
-                }).then(res => {
-                    if (res.data.code !== 1) {
-                        that.$message.success(res.data.message)
-                    } else {
-                        that.$message.error(res.data.message)
-                    }
-                }).catch(e => {
-                    window.console.log(e)
-                })
-            }else {
-                that.$message.error('请先填写账号')
-            }
+            const userInfo = JSON.parse(localStorage.getItem('user_info'))
+            this.$http.get('/sendSms2BindedPhone/', {
+                params: {
+                    'uid': userInfo.uid
+                }
+            }).then(res => {
+                if (res.data.message === 'success') {
+                    that.$message.success(res.data.message)
+                } else {
+                    that.$message.error(res.data.message)
+                }
+            }).catch(e => {
+                window.console.log(e)
+            })
         },
         changePassword: function () {
             const that = this
+            const userInfo = JSON.parse(localStorage.getItem('user_info'))
             this.$http.post('/changePassword/', {
-                'uid': that.passMess.account,
+                'uid': userInfo.uid,
                 'oldpassword': that.passMess.password,
-                'newpassword': that.passMess.phone,
+                'newpassword': that.passMess.oPassword,
                 'code': that.passMess.code
             }).then(res => {
-                if (res.data.code === 0) {
+                if (res.data.message === 'success') {
                     that.$message.success("修改成功")
                     that.passMess = {
                         "account": "",
@@ -149,7 +141,7 @@ export default {
                         "code": ""
                     }
                     that.$message.success("请重新登录")
-                    that.$router.replace('/login')
+                    that.$router.replace('/')
                 } else {
                     that.$message.error(res.data.message)
                 }
@@ -159,13 +151,14 @@ export default {
         },
         changePhone: function () {
             const that = this
-            this.$http.post('/changePassword/', {
-                'uid': that.passMess.account,
+            const userInfo = JSON.parse(localStorage.getItem('user_info'))
+            this.$http.post('/changePhonenumber/', {
+                'uid': userInfo.uid,
                 'password': that.passMess.password,
                 'newphonenumber': that.passMess.phone,
                 'code': that.passMess.code
             }).then(res => {
-                if (res.data.code === 0) {
+                if (res.data.message === 'success') {
                     that.$message.success("修改成功")
                     that.passMess = {
                         "account": "",
@@ -174,7 +167,7 @@ export default {
                         "code": ""
                     }
                     that.$message.success("请重新登录")
-                    that.$router.replace('/login')
+                    that.$router.replace('/')
                 } else {
                     that.$message.error(res.data.message)
                 }
@@ -282,7 +275,7 @@ input::placeholder {
     top: 50%;
     left: 30px;
     width: calc(50% - 30px);
-    min-height: 500px;
+    min-height: 420px;
     background-color: #fff;
     border-radius: 3px;
     box-shadow: 2px 0 15px rgba(0, 0, 0, .25);
